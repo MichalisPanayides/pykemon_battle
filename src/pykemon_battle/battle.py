@@ -30,4 +30,4 @@ class Battle:
         self.difficulty = diff
 
 
-New_Battle = Battle()
+# New_Battle = Battle()
