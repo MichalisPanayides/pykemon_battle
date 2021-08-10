@@ -10,27 +10,42 @@ from .move import Move
 
 
 class Pokemon:
+    """
+    A pokemon is a class that represents a pokemon.
+    """
+
     def __init__(self, poke_id):
         self.json = get_pokemon_info(poke_id=poke_id)
-        self.id = self.json["id"]
+        self.number = self.json["id"]
         self.name = self.json["name"]
         self.heal()
+        self.reset()
+        self.moveset = None
 
         # self.get_moves()
 
     def reset(self):
-        self.attack = self.json["stats"][1]["base_stat"]
-        self.deffense = self.json["stats"][2]["base_stat"]
-        self.special_attack = self.json["stats"][3]["base_stat"]
-        self.special_deffense = self.json["stats"][4]["base_stat"]
-        self.speed = self.json["stats"][5]["base_stat"]
+        """
+        Resets the pokemon's health points to its base stat.
+        """
+        attack = self.json["stats"][1]["base_stat"]
+        deffense = self.json["stats"][2]["base_stat"]
+        special_attack = self.json["stats"][3]["base_stat"]
+        special_deffense = self.json["stats"][4]["base_stat"]
+        speed = self.json["stats"][5]["base_stat"]
+        self.stats = (attack, deffense, special_attack, special_deffense, speed)
 
     def heal(self):
-        self.reset()
-        self.hp = self.json["stats"][0]["base_stat"]
+        """
+        Heals the pokemon to its base stat.
+        """
+        self.health_points = self.json["stats"][0]["base_stat"]
         self.status = "healthy"
 
     def get_moves(self):
+        """
+        Returns a list of moves that the pokemon can use.
+        """
         all_possible_moves = self.json["moves"]
         move_selection_method = input(
             "Move selection method: \n1: Automatic \n2: Manual \n3: Random \nAnswer:"
