@@ -8,6 +8,11 @@ author = "Michalis Panayides"
 author-email = "PanayidesM@cardiff.ac.uk"
 home-page = "https://github.com/11michalis11/pykemon_battle"
 requires-python = ">=3.7"
+requires = [
+    "requests==2.25.1",
+    "types-requests==2.25.5",
+    "numpy==1.20.3"
+]
 classifiers = [ "License :: OSI Approved :: MIT License",]
 description-file = "README.md"
 
