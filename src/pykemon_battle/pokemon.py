@@ -48,7 +48,7 @@ class Pokemon:
         """
         all_possible_moves = self.json["moves"]
         move_selection_method = input(
-            "Move selection method: \n1: Automatic \n2: Manual \n3: Random \nAnswer:"
+            "Move selection method: \n1: Automatic \n2: Manual \n3: Random \nAnswer : "
         )
         if move_selection_method == "1" or move_selection_method.lower() == "automatic":
             selected_moves = choose_best_moveset(all_possible_moves)

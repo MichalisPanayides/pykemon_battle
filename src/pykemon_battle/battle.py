@@ -17,7 +17,7 @@ class Battle:
         """
         self.team = tuple()
         for team_index in range(size):
-            pokemon_id = input(f"Choose pokemon {team_index + 1} by id or name")
+            pokemon_id = input(f"Choose pokemon {team_index + 1} by id or name: ")
             current_pokemon = Pokemon(pokemon_id)
             current_pokemon.get_moves()
             self.team += (current_pokemon,)
