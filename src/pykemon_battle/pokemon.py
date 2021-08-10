@@ -1,4 +1,4 @@
-from .utils import (
+from .utils.utilities import (
     get_pokemon_info,
     choose_best_moveset,
     randomly_choose_moveset,

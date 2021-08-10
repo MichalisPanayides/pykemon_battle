@@ -1,4 +1,4 @@
-from .utils import get_move_info
+from .utils.utilities import get_move_info
 
 
 class Move:
