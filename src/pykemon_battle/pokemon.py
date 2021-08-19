@@ -16,8 +16,8 @@ class Pokemon:
 
     def __init__(self, poke_id):
         self.json = get_pokemon_info(poke_id=poke_id)
-        self.number = self.json["id"]
         self.name = self.json["name"]
+        self.type = self.json["types"][0]["type"]["name"]
         self.heal()
         self.reset()
         self.moveset = None
@@ -29,11 +29,17 @@ class Pokemon:
         Resets the pokemon's health points to its base stat.
         """
         attack = self.json["stats"][1]["base_stat"]
-        deffense = self.json["stats"][2]["base_stat"]
+        defense = self.json["stats"][2]["base_stat"]
         special_attack = self.json["stats"][3]["base_stat"]
-        special_deffense = self.json["stats"][4]["base_stat"]
+        special_defense = self.json["stats"][4]["base_stat"]
         speed = self.json["stats"][5]["base_stat"]
-        self.stats = (attack, deffense, special_attack, special_deffense, speed)
+        self.stats = {
+            "attack": attack,
+            "defense": defense,
+            "special_attack": special_attack,
+            "special_defense": special_defense,
+            "speed": speed,
+        }
 
     def heal(self):
         """
