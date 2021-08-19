@@ -1,24 +1,47 @@
-from .utils import get_move_info
+from .utils.utilities import get_move_info
 
 
 class Move:
+    """
+    A move class that contains all the information about a move.
+    """
+
     def __init__(self, move_name):
         self.json = get_move_info(move_name)
         self.name = self.json["name"]
-        self.type = self.json["type"]["name"]
-        self.power = self.json["power"]
-        self.total_pp = self.json["pp"]
-        self.pp_left = self.total_pp
-        self.accuracy = self.json["accuracy"]
-        self.priority = self.json["priority"]
-        self.target = self.json["target"]["name"]
+        move_type = self.json["type"]["name"]
+        power = self.json["power"]
+        total_pp = self.json["pp"]
+        accuracy = self.json["accuracy"]
+        priority = self.json["priority"]
+        target = self.json["target"]["name"]
+        self.stats = {
+            "type": move_type,
+            "power": power,
+            "total_pp": total_pp,
+            "pp_left": total_pp,
+            "accuracy": accuracy,
+            "priority": priority,
+            "target": target,
+        }
+        self.get_other_stats()
 
-        # Should these be in? Investigate
-        self.damage_class = self.json["damage_class"]["name"]
-        self.effect_chance = self.json["effect_chance"]
-        self.effect_changes = self.json["effect_changes"]
-        self.effect_entries = self.json["effect_entries"]  # [-1]["effect"]
-        self.stat_changes = self.json["stat_changes"]
+    def get_other_stats(self):
+        """
+        Get the other stats of the move (damage, effect, etc.)
+        """
+        damage_class = self.json["damage_class"]["name"]
+        effect_chance = self.json["effect_chance"]
+        effect_changes = self.json["effect_changes"]
+        effect_entries = self.json["effect_entries"]  # [-1]["effect"]
+        stat_changes = self.json["stat_changes"]
+        self.other_stats = {
+            "damage_class": damage_class,
+            "effect_chance": effect_chance,
+            "effect_changes": effect_changes,
+            "effect_entries": effect_entries,
+            "stat_changes": stat_changes,
+        }
 
     def __repr__(self):
         return f"{self.name.capitalize()}"
