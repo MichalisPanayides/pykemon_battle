@@ -48,19 +48,16 @@ class Pokemon:
         self.health_points = self.json["stats"][0]["base_stat"]
         self.status = "healthy"
 
-    def get_moves(self):
+    def get_moves(self, move_selection="Random"):
         """
         Returns a list of moves that the pokemon can use.
         """
         all_possible_moves = self.json["moves"]
-        move_selection_method = input(
-            "Move selection method: \n1: Automatic \n2: Manual \n3: Random \nAnswer : "
-        )
-        if move_selection_method == "1" or move_selection_method.lower() == "automatic":
+        if move_selection == "1" or move_selection.lower() == "automatic":
             selected_moves = choose_best_moveset(all_possible_moves)
-        elif move_selection_method == "2" or move_selection_method.lower() == "manual":
+        elif move_selection == "2" or move_selection.lower() == "manual":
             selected_moves = manually_choose_moveset(all_possible_moves)
-        elif move_selection_method == "3" or move_selection_method.lower() == "random":
+        elif move_selection == "3" or move_selection.lower() == "random":
             selected_moves = randomly_choose_moveset(all_possible_moves)
         else:
             selected_moves = choose_first_four_moves_for_now(all_possible_moves)
