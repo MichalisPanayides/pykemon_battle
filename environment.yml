@@ -1,0 +1,13 @@
+name: pokenv
+channels:
+  - defaults
+dependencies:
+  - pip==21.0.1
+  - python==3.9
+  - pylint==2.7.2
+  - notebook==6.2.0
+  - requests==2.25.1
+  - pip:
+      - flit==3.2.0
+      - pokedex.py==1.1.2
+prefix: C:\Users\micha\Anaconda3\envs\pokenv
