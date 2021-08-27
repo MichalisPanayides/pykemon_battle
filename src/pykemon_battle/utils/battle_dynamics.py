@@ -1,11 +1,14 @@
 import random
 import time
 
+from .constants import TYPE_EFFECTS
+
 
 def apply_move(attacking_pokemon, defending_pokemon, move):
     """
     Apply the move to the enemy pokemon
     """
+    # calculate_damage(attacking_pokemon, defending_pokemon, move)
     move_power = attacking_pokemon.moveset[move].stats["power"]
     if move_power is None:
         move_power = 0

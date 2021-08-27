@@ -46,7 +46,7 @@ class Pokemon:
         Heals the pokemon to its base stat.
         """
         self.health_points = self.json["stats"][0]["base_stat"]
-        self.status = "healthy"
+        self.status = "active"
 
     def get_moves(self, move_selection="Random"):
         """
