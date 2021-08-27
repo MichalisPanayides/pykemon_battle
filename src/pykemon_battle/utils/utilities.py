@@ -1,5 +1,8 @@
 import numpy as np
 import requests
+import requests_cache
+
+requests_cache.install_cache("pykemon_cache", backend="sqlite", expire_after=600)
 
 
 def get_pokemon_info(poke_id, base_url="https://pokeapi.co/api/v2/pokemon/"):
