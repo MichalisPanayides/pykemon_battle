@@ -1,7 +1,7 @@
 import random
 import time
 
-from .constants import TYPE_EFFECTS
+# from .constants import TYPE_EFFECTS
 
 
 def apply_move(attacking_pokemon, defending_pokemon, move):
@@ -15,7 +15,7 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
     move_accuracy = attacking_pokemon.moveset[move].stats["accuracy"]
     if move_accuracy is None:
         move_accuracy = 100
-    move_type = attacking_pokemon.moveset[move].stats["type"]
+    # move_type = attacking_pokemon.moveset[move].stats["type"]
     if random.random() < (move_accuracy / 100):
         defending_pokemon.health_points = defending_pokemon.health_points - move_power
         print(

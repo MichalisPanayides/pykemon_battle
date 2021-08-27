@@ -1,11 +1,14 @@
 import pykemon_battle as pkmn
 
 
-def test_Pokemon():
-    Weedle = pkmn.Pokemon("weedle")
-    assert Weedle.name == "weedle"
-    assert Weedle.type == "bug"
-    assert Weedle.health_points == 40
-    assert Weedle.stats["attack"] == 35
-    assert Weedle.stats["defense"] == 30
-    assert Weedle.stats["speed"] == 50
+def test_pokemon():
+    """
+    Test the Pokemon class
+    """
+    weedle = pkmn.Pokemon("weedle")
+    assert weedle.name == "weedle"
+    assert weedle.type == "bug"
+    assert weedle.health_points == 40
+    assert weedle.stats["attack"] == 35
+    assert weedle.stats["defense"] == 30
+    assert weedle.stats["speed"] == 50
