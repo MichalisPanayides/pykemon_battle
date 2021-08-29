@@ -3,7 +3,7 @@ import time
 
 # from .move import Move
 from .pokemon import Pokemon
-from .utils import enemy_turn_logic, player_turn_logic
+from .utils import enemy_turn_logic, player_turn_logic, show_health_bar
 
 
 class Battle:
@@ -59,7 +59,7 @@ class Battle:
         if difficulty == "random":
             self.enemy_team = []
             for _ in range(len(self.team)):
-                enemy_pokemon = Pokemon(random.randint(1, 386))
+                enemy_pokemon = Pokemon(random.randint(1, 151))
                 enemy_pokemon.get_moves(move_selection="random")
                 self.enemy_team.append(enemy_pokemon)
         else:
@@ -72,10 +72,10 @@ class Battle:
         print("Fetching enemy details")
         self.choose_dificulty()
         print("Your opponent is ready")
-        time.sleep(1)
+        time.sleep(0.5)
 
         print("Trainers. Prepare your teams:")
-        time.sleep(2)
+        time.sleep(1.5)
         print("3")
         time.sleep(0.8)
         print("2")
@@ -95,8 +95,7 @@ class Battle:
 
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
             print("\n")
-            print(player_pokemon, " HP: ", player_pokemon.health_points)
-            print(enemy_pokemon, " HP: ", enemy_pokemon.health_points)
+            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
             time.sleep(2)
             print("\n")
             if player_turn:

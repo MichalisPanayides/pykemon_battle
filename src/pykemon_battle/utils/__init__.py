@@ -8,6 +8,7 @@ from .utilities import (
 )
 
 from .battle_dynamics import (
+    show_health_bar,
     apply_move,
     player_turn_logic,
     enemy_turn_logic,
