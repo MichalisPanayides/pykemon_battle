@@ -17,7 +17,7 @@ class Pokemon:
     def __init__(self, poke_id):
         self.json = get_pokemon_info(poke_id=poke_id)
         self.name = self.json["name"]
-        self.type = self.json["types"][0]["type"]["name"]
+        self.type = list(slot["type"]["name"] for slot in self.json["types"])
         self.heal()
         self.reset()
         self.moveset = None
