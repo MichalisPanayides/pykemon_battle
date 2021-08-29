@@ -29,6 +29,31 @@ def show_health_bar(pokemon_1, pokemon_2):
     print(health_text_2)
 
 
+def choose_move(player_pokemon):
+    """
+    Choose one of the 4 moves
+    """
+    move_selected = False
+    while not move_selected:
+        for count, move in enumerate(player_pokemon.moveset):
+            print(
+                f"{count + 1} : {move} \n \t {move.stats['pp_left']}/{move.stats['total_pp']}"
+            )
+            time.sleep(0.3)
+        print("\n")
+        # TODO: Make sure player move is between 1 and 4
+        selected_move = int(input("Choose your move [1-4]: "))
+        selected_move -= 1
+        if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
+            player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
+            move_selected = True
+        else:
+            print("\n")
+            print("There's no PP left")
+            time.sleep(1)
+    return selected_move
+
+
 def damage_function(variables):
     """
     The damage that the attacking pokemon inflicts to the defending pokemon.
@@ -123,6 +148,7 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
 
     if defending_pokemon.health_points <= 0:
         time.sleep(1.5)
+        show_health_bar(pokemon_1=attacking_pokemon, pokemon_2=defending_pokemon)
         print(f"{defending_pokemon} fainted")
         print("\n")
         defending_pokemon.health_points = 0
@@ -138,16 +164,10 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     """
     print(player_pokemon, "'s turn:")
     time.sleep(1)
-    for count, move in enumerate(player_pokemon.moveset):
-        print(count + 1, ": ", move)
-        time.sleep(0.3)
-    print("\n")
-    # TODO: Make sure player move is between 1 and 4
-    player_move = int(input("Choose your move [1-4]: "))
-    player_move -= 1
+    selected_move = choose_move(player_pokemon)
     print("\n")
     time.sleep(1)
-    apply_move(player_pokemon, enemy_pokemon, player_move)
+    apply_move(player_pokemon, enemy_pokemon, selected_move)
     time.sleep(2)
     print("\n")
     if enemy_pokemon.health_points <= 0:
