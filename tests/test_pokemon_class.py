@@ -7,7 +7,7 @@ def test_pokemon():
     """
     weedle = pkmn.Pokemon("weedle")
     assert weedle.name == "weedle"
-    assert weedle.type == ['bug', 'poison']
+    assert weedle.type == ["bug", "poison"]
     assert weedle.health_points == 40
     assert weedle.stats["attack"] == 35
     assert weedle.stats["defense"] == 30
