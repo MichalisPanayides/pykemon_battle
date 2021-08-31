@@ -37,7 +37,8 @@ def choose_move(player_pokemon):
     while not move_selected:
         for count, move in enumerate(player_pokemon.moveset):
             print(
-                f"{count + 1} : {move} \n \t {move.stats['pp_left']}/{move.stats['total_pp']}"
+                f"{count + 1} : {move} \n \t "
+                + f"{move.stats['pp_left']}/{move.stats['total_pp']}"
             )
             time.sleep(0.3)
         print("\n")
