@@ -1,32 +1,10 @@
 import math
+import os
 import random
 import time
 
 from .constants import TYPE_EFFECTS
-
-
-def show_health_bar(pokemon_1, pokemon_2):
-    """
-    Function to display health points of the battling pokemon
-    """
-    bar_1_length = int(pokemon_1.health_points / 3)
-    bar_2_length = int(pokemon_2.health_points / 3)
-    health_text_1, health_text_2 = (
-        f"HP: {pokemon_1.health_points}/{pokemon_1.json['stats'][0]['base_stat']} ",
-        f"HP: {pokemon_2.health_points}/{pokemon_2.json['stats'][0]['base_stat']} ",
-    )
-    health_bar_1, health_bar_2 = "", ""
-    for _ in range(bar_1_length):
-        health_bar_1 += "#"
-    for _ in range(bar_2_length):
-        health_bar_2 += "#"
-    print(pokemon_1)
-    print(health_bar_1)
-    print(health_text_1)
-    print()
-    print(pokemon_2)
-    print(health_bar_2)
-    print(health_text_2)
+from .text_display import show_health_bar, clear_screen, wait_for_input
 
 
 def choose_move(player_pokemon):
@@ -34,6 +12,7 @@ def choose_move(player_pokemon):
     Choose one of the 4 moves
     """
     move_selected = False
+    print("Choose your move: \n")
     while not move_selected:
         for count, move in enumerate(player_pokemon.moveset):
             print(
@@ -96,9 +75,6 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
     """
     Apply the move to the enemy pokemon
     """
-    print(f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}")
-    print("\n")
-    time.sleep(1)
 
     attack_variables = {}
     attack_variables["move_power"] = attacking_pokemon.moveset[move].stats["power"]
@@ -128,33 +104,34 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
             else 100
         )
         if random.random() < (move_accuracy / 100):
-            print(f"Damage: {damage}")
-            print("\n")
+            wait_for_input(
+                text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]} ▼"
+            )
+
             defending_pokemon.health_points = defending_pokemon.health_points - damage
             if attack_variables["modifier"] == 1:
-                print("It's effective")
+                wait_for_input(text=f"It's effective! (Damage: {damage}) ▼")
             elif attack_variables["modifier"] >= 2:
-                print("It's supper effective!")
+                wait_for_input(text=f"It's supper effective! (Damage: {damage}) ▼")
             elif 0 < attack_variables["modifier"] <= 0.5:
-                print("It's not very effective!")
+                wait_for_input(text=f"It's not very effective! (Damage: {damage}) ▼")
             elif attack_variables["modifier"] == 0:
-                print("But it failed!")
+                wait_for_input(text=f"But it failed! (Damage: {damage}) ▼")
             else:
                 raise ValueError("Invalid modifier value")
         else:
-            print("Attack missed!")
+            wait_for_input(text="Attack missed! ▼")
     else:
-        print("Unfortunately this move has not been implemented yet. Sorry")
-    print("\n")
+        wait_for_input(
+            text="Unfortunately this move has not been implemented yet. Sorry. ▼"
+        )
 
     if defending_pokemon.health_points <= 0:
-        time.sleep(1.5)
-        show_health_bar(pokemon_1=attacking_pokemon, pokemon_2=defending_pokemon)
-        print(f"{defending_pokemon} fainted")
-        print("\n")
+        # time.sleep(1.5)
+        wait_for_input(text=f"{defending_pokemon} fainted ▼")
         defending_pokemon.health_points = 0
+        show_health_bar(pokemon_1=attacking_pokemon, pokemon_2=defending_pokemon)
         defending_pokemon.stats = "inactive"
-        defending_pokemon.fainted = True
 
     return defending_pokemon.health_points
 
@@ -163,13 +140,16 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     """
     Logic of the player turn
     """
-    print(player_pokemon, "'s turn:")
-    time.sleep(1)
+    clear_screen()
+    show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+    print("\n")
+    wait_for_input(f"{player_pokemon}, 's turn ▼")
+
     selected_move = choose_move(player_pokemon)
     print("\n")
-    time.sleep(1)
+    # time.sleep(1)
     apply_move(player_pokemon, enemy_pokemon, selected_move)
-    time.sleep(2)
+    # time.sleep(2)
     print("\n")
     if enemy_pokemon.health_points <= 0:
         enemy_remaining_pokemon.remove(enemy_pokemon)

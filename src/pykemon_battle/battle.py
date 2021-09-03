@@ -3,7 +3,13 @@ import time
 
 # from .move import Move
 from .pokemon import Pokemon
-from .utils import enemy_turn_logic, player_turn_logic, show_health_bar
+from .utils import (
+    enemy_turn_logic,
+    player_turn_logic,
+    show_health_bar,
+    clear_screen,
+    wait_for_input,
+)
 
 
 class Battle:
@@ -65,23 +71,21 @@ class Battle:
         else:
             raise NotImplementedError
 
-    def start_battle(self):
+    def start_battle(self, text_speed="normal"):
         """
         Start the battle
         """
+        clear_screen()
         print("Fetching enemy details")
         self.choose_dificulty()
-        print("Your opponent is ready")
-        time.sleep(0.5)
+        wait_for_input(text="Your opponent is ready ▼")
 
-        print("Trainers. Prepare your teams:")
-        time.sleep(1.5)
         print("3")
         time.sleep(0.8)
         print("2")
         time.sleep(0.8)
         print("1")
-        time.sleep(1)
+        time.sleep(0.8)
         print("FIGHT")
         time.sleep(1)
 
@@ -94,9 +98,8 @@ class Battle:
         player_turn = player_pokemon.stats["speed"] >= enemy_pokemon.stats["speed"]
 
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
-            print("\n")
+            clear_screen()
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-            time.sleep(2)
             print("\n")
             if player_turn:
                 enemy_pokemon, enemy_remaining_pokemon = player_turn_logic(
