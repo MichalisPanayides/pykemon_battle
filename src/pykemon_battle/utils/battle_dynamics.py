@@ -112,7 +112,7 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
             if attack_variables["modifier"] == 1:
                 wait_for_input(text=f"It's effective! (Damage: {damage}) ▼")
             elif attack_variables["modifier"] >= 2:
-                wait_for_input(text=f"It's supper effective! (Damage: {damage}) ▼")
+                wait_for_input(text=f"It's super effective! (Damage: {damage}) ▼")
             elif 0 < attack_variables["modifier"] <= 0.5:
                 wait_for_input(text=f"It's not very effective! (Damage: {damage}) ▼")
             elif attack_variables["modifier"] == 0:
