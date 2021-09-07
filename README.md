@@ -11,6 +11,7 @@ A text-based Pokémon battling system
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
     <li><a href="#installation">Installation</a></li>
+    <li><a href="#usage">Usage</a></li>
     <li><a href="#tests">Tests</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
@@ -36,6 +37,21 @@ Install a development version of this library by cloning the repository and runn
     $ cd pykemon_battle
     $ python -m pip install flit
     $ python -m flit install --symlink
+
+
+## Usage
+Include the following in a python script:
+
+```python
+  import pykemon_battle as pkm
+
+  team_size = 3
+  new_battle = pkm.Battle(team_size)
+  new_battle.start_batte()
+```
+Then run the script in your terminal:
+
+    $ python my_script.py
 
 
 ## Tests
