@@ -47,7 +47,7 @@ import pykemon_battle as pkm
 
 team_size = 3
 new_battle = pkm.Battle(team_size)
-new_battle.start_batte()
+new_battle.start_battle()
 ```
 Then run the script in your terminal:
 
