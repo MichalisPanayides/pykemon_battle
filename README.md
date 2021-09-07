@@ -43,11 +43,11 @@ Install a development version of this library by cloning the repository and runn
 Include the following in a python script:
 
 ```python
-import pykemon_battle as pkm
+  import pykemon_battle as pkm
 
-team_size = 3
-new_battle = pkm.Battle(team_size)
-new_battle.start_batte()
+  team_size = 3
+  new_battle = pkm.Battle(team_size)
+  new_battle.start_batte()
 ```
 Then run the script in your terminal:
 
