@@ -6,7 +6,6 @@ A text-based Pokémon battling system
 ========================================
 
 
-<!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
   <ol>
@@ -22,18 +21,14 @@ A text-based Pokémon battling system
 
 
 
-<!-- ABOUT THE PROJECT -->
 ## About The Project
-
 `pykemmon_battle` is a library that provides a text-based Pokémon battling system. 
 
 
 ## Installation
-
 Quick installation instructions:
 
     $ python -m pip install pykemon_battle
-
 
 Install a development version of this library by cloning the repository and running `flit`:
     
@@ -43,31 +38,22 @@ Install a development version of this library by cloning the repository and runn
     $ python -m flit install --symlink
 
 
-<!-- TESTS EXAMPLES -->
 ## Tests
-
 Run all tests developed by first installing and then running `tox`:
 
     $ python -m pip install tox
     $ python -m tox
 
 
-<!-- ROADMAP -->
 ## Roadmap
-
 See the [open issues](https://github.com/11michalis11/pykemon_battle/issues) for a list of proposed features (and known issues).
 
 
-<!-- LICENSE -->
 ## License
-
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
-<!-- CONTRIBUTING -->
-
 ## Contributing
-
 1. Fork the repository
 2. Clone the forked repository
 3. Create a new branch
@@ -78,18 +64,14 @@ Distributed under the MIT License. See `LICENSE` for more information.
 8. Open PR on GitHub
 
 
-<!-- CONTACT -->
 ## Contact
-
-Your Name - [@Michalis_Pan](https://twitter.com/Michalis_Pan) - PanayidesM@cardiff.ac.uk
+Michalis Panayides - [@Michalis_Pan](https://twitter.com/Michalis_Pan) - PanayidesM@cardiff.ac.uk
 
 Project Link: [pykemon_battle](https://github.com/11michalis11/pykemon_battle)
 
 
 
-
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [tests-shield]: https://img.shields.io/badge/Tests-passing-GREEN.svg
 [tests-url]: https://github.com/11michalis11/pykemon_battle/actions
 [issues-shield]: https://img.shields.io/github/issues/11michalis11/pykemon_battle.svg
