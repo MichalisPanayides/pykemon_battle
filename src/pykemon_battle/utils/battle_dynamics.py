@@ -3,6 +3,7 @@ import os
 import random
 import time
 
+from .console import console
 from .constants import TYPE_EFFECTS
 from .text_display import show_health_bar, clear_screen, wait_for_input
 
@@ -12,24 +13,24 @@ def choose_move(player_pokemon):
     Choose one of the 4 moves
     """
     move_selected = False
-    print("Choose your move: \n")
+    console.print("Choose your move: \n")
     while not move_selected:
         for count, move in enumerate(player_pokemon.moveset):
-            print(
+            console.print(
                 f"{count + 1} : {move} \n \t "
                 + f"{move.stats['pp_left']}/{move.stats['total_pp']}"
             )
             time.sleep(0.3)
-        print("\n")
+        console.print("\n")
         # TODO: Make sure player move is between 1 and 4
-        selected_move = int(input("Choose your move [1-4]: "))
+        selected_move = int(console.input("Choose your move [1-4]: "))
         selected_move -= 1
         if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
             player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
             move_selected = True
         else:
-            print("\n")
-            print("There's no PP left")
+            console.print("\n")
+            console.print("There's no PP left")
             time.sleep(1)
     return selected_move
 
@@ -103,11 +104,11 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
             if attacking_pokemon.moveset[move].stats["accuracy"] is not None
             else 100
         )
-        if random.random() < (move_accuracy / 100):
-            wait_for_input(
-                text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]} ▼"
-            )
 
+        wait_for_input(
+            text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]} ▼"
+        )
+        if random.random() < (move_accuracy / 100):
             defending_pokemon.health_points = defending_pokemon.health_points - damage
             if attack_variables["modifier"] == 1:
                 wait_for_input(text=f"It's effective! (Damage: {damage}) ▼")
@@ -127,10 +128,8 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
         )
 
     if defending_pokemon.health_points <= 0:
-        # time.sleep(1.5)
         wait_for_input(text=f"{defending_pokemon} fainted ▼")
         defending_pokemon.health_points = 0
-        show_health_bar(pokemon_1=attacking_pokemon, pokemon_2=defending_pokemon)
         defending_pokemon.stats = "inactive"
 
     return defending_pokemon.health_points
@@ -155,10 +154,10 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
         enemy_remaining_pokemon.remove(enemy_pokemon)
         if len(enemy_remaining_pokemon) > 0:
             enemy_pokemon = enemy_remaining_pokemon[0]
-            print(f"Enemy chooses {enemy_pokemon}")
+            console.print(f"Enemy chooses {enemy_pokemon}")
             time.sleep(1)
             print("\n")
-            print(player_pokemon, " VS ", enemy_pokemon)
+            console.print(player_pokemon, " VS ", enemy_pokemon)
             time.sleep(1)
         else:
             enemy_pokemon = None
@@ -169,25 +168,20 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
     """
     Logic of the enemy turn
     """
-    print(enemy_pokemon, "'s turn:")
-    time.sleep(1)
+    wait_for_input(text=f"{enemy_pokemon} 's turn ▼")
     enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
-    print("\n")
     apply_move(enemy_pokemon, player_pokemon, enemy_move)
     time.sleep(1)
     if player_pokemon.health_points <= 0:
         player_remaining_pokemon.remove(player_pokemon)
         if len(player_remaining_pokemon) > 0:
-            print("Which pokemon do you choose?")
-            time.sleep(0.7)
+            console.print("Which pokemon do you choose?")
             for i, poke in enumerate(player_remaining_pokemon):
-                print(i + 1, ": ", poke)
+                console.print(i + 1, ": ", poke)
                 time.sleep(0.3)
             poke_choice = int(input("Choose a pokemon: "))
             poke_choice -= 1
             player_pokemon = player_remaining_pokemon[poke_choice]
-            print(player_pokemon, " VS ", enemy_pokemon)
-            time.sleep(1)
         else:
             player_pokemon = None
     return player_pokemon, player_remaining_pokemon

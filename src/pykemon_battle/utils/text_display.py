@@ -2,6 +2,7 @@ import os
 import time
 
 import numpy as np
+from .console import console
 
 
 def pause_text(text_speed):
@@ -26,13 +27,13 @@ def show_health_bar(pokemon_1, pokemon_2):
         health_bar_1 += "#"
     for _ in range(bar_2_length):
         health_bar_2 += "#"
-    print(pokemon_1)
-    print(health_bar_1)
-    print(health_text_1)
-    print()
-    print(pokemon_2)
-    print(health_bar_2)
-    print(health_text_2)
+    console.print(pokemon_1)
+    console.print(health_bar_1)
+    console.print(health_text_1)
+    console.print()
+    console.print(pokemon_2)
+    console.print(health_bar_2)
+    console.print(health_text_2)
 
 
 def clear_screen():
@@ -40,4 +41,4 @@ def clear_screen():
 
 
 def wait_for_input(text):
-    input(text)
+    console.input(text)

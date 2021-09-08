@@ -20,3 +20,5 @@ from .text_display import (
     clear_screen,
     wait_for_input,
 )
+
+from .console import console

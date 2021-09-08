@@ -9,6 +9,7 @@ from .utils import (
     show_health_bar,
     clear_screen,
     wait_for_input,
+    console,
 )
 
 
@@ -42,7 +43,7 @@ class Battle:
                 try:
                     current_pokemon = Pokemon(pokemon_id)
                 except ValueError:
-                    print("Invalid input")
+                    console.print("Invalid input")
                     continue
             current_pokemon.get_moves(move_selection=move_selection)
             self.team.append(current_pokemon)
@@ -51,7 +52,7 @@ class Battle:
         """
         Choose the difficulty of the battle
         """
-        # TODO: Implent all the difficulities
+        # TODO: Implement all the difficulities
         # diff = input(
         #     "Choose the difficulty: \n1: Random \n2: Easy \n3: Hard \nAnswer : "
         # )
@@ -71,23 +72,25 @@ class Battle:
         else:
             raise NotImplementedError
 
-    def start_battle(self, text_speed="normal"):
+    def start_battle(self, terminal_change=False):
         """
         Start the battle
         """
         clear_screen()
-        print("Fetching enemy details")
-        self.choose_dificulty()
+        style = "bold"
+        with console.status("...", spinner="aesthetic"):
+            console.print("Fetching enemy details")
+            self.choose_dificulty()
         wait_for_input(text="Your opponent is ready ▼")
 
-        print("3")
-        time.sleep(0.8)
-        print("2")
-        time.sleep(0.8)
-        print("1")
-        time.sleep(0.8)
-        print("FIGHT")
-        time.sleep(1)
+        # console.print(3, style=style)
+        # time.sleep(0.8)
+        # console.print(2, style=style)
+        # time.sleep(0.8)
+        # console.print(1, style=style)
+        # time.sleep(0.8)
+        # console.print("FIGHT", style=style)
+        # time.sleep(1)
 
         player_remaining_pokemon = self.team.copy()
         enemy_remaining_pokemon = self.enemy_team.copy()
@@ -112,6 +115,6 @@ class Battle:
             player_turn = not player_turn
 
         if len(player_remaining_pokemon) > 0:
-            print("You won!")
+            console.print("You won!")
         else:
-            print("You lost!")
+            console.print("You lost!")
