@@ -10,6 +10,7 @@ from .utils import (
     show_health_bar,
     clear_screen,
     wait_for_input,
+    display_text,
     console,
 )
 
@@ -44,7 +45,7 @@ class Battle:
                 try:
                     current_pokemon = Pokemon(pokemon_id)
                 except ValueError:
-                    console.print("Invalid input")
+                    display_text("Invalid input")
                     continue
             current_pokemon.get_moves(move_selection=move_selection)
             self.team.append(current_pokemon)
@@ -79,19 +80,10 @@ class Battle:
         """
         clear_screen()
         style = "bold"
-        with console.status("...", spinner="aesthetic"):
-            console.print("Fetching enemy details")
+        with console.status("", spinner="aesthetic"):
+            display_text("Fetching enemy details")
             self.choose_dificulty()
-        wait_for_input(text="Your opponent is ready ▼")
-
-        # console.print(3, style=style)
-        # time.sleep(0.8)
-        # console.print(2, style=style)
-        # time.sleep(0.8)
-        # console.print(1, style=style)
-        # time.sleep(0.8)
-        # console.print("FIGHT", style=style)
-        # time.sleep(1)
+        wait_for_input(text="Your opponent is ready ▼ ")
 
         player_remaining_pokemon = self.team.copy()
         enemy_remaining_pokemon = self.enemy_team.copy()
@@ -118,6 +110,6 @@ class Battle:
             player_turn = not player_turn
 
         if len(player_remaining_pokemon) > 0:
-            console.print("You won!")
+            display_text("You won!")
         else:
-            console.print("You lost!")
+            display_text("You lost!")

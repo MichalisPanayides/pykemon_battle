@@ -2,14 +2,10 @@ import os
 import time
 
 import numpy as np
-from .console import console
+from rich.console import Console
 
 
-def pause_text(text_speed):
-    if text_speed == "normal":
-        time.sleep(1.5)
-    if text_speed == "fast":
-        time.sleep(0.8)
+console = Console(highlight=False)
 
 
 def show_health_bar(pokemon_1, pokemon_2):
@@ -27,18 +23,23 @@ def show_health_bar(pokemon_1, pokemon_2):
         health_bar_1 += "#"
     for _ in range(bar_2_length):
         health_bar_2 += "#"
-    console.print(pokemon_1)
-    console.print(health_bar_1)
-    console.print(health_text_1)
-    console.print()
-    console.print(pokemon_2)
-    console.print(health_bar_2)
-    console.print(health_text_2)
+    display_text(text=pokemon_1)
+    display_text(text=health_bar_1)
+    display_text(text=health_text_1)
+    display_text(text="")
+    display_text(text=pokemon_2)
+    display_text(text=health_bar_2)
+    display_text(text=health_text_2)
 
 
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-def wait_for_input(text):
-    console.input(text)
+def display_text(text, style="bold white on black"):
+    console.print(text, style=style)
+
+
+def wait_for_input(text, style="bold white on black"):
+    console = Console(style=style, highlight=False)
+    return console.input(text)

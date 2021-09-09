@@ -15,10 +15,9 @@ from .battle_dynamics import (
 )
 
 from .text_display import (
-    pause_text,
+    display_text,
     show_health_bar,
     clear_screen,
     wait_for_input,
+    console,
 )
-
-from .console import console
