@@ -1,3 +1,4 @@
+import os
 import random
 import time
 
@@ -102,6 +103,8 @@ class Battle:
 
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
             clear_screen()
+            if terminal_change:
+                os.system(f"pokemon {player_pokemon.name}")
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
             print("\n")
             if player_turn:
