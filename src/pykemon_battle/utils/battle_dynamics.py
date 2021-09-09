@@ -12,26 +12,27 @@ def choose_move(player_pokemon):
     """
     Choose one of the 4 moves
     """
-    move_selected = False
+    is_move_selected = False
     console.print("Choose your move: \n")
-    while not move_selected:
-        for count, move in enumerate(player_pokemon.moveset):
-            console.print(
-                f"{count + 1} : {move} \n \t "
-                + f"{move.stats['pp_left']}/{move.stats['total_pp']}"
-            )
-            time.sleep(0.3)
-        console.print("\n")
-        # TODO: Make sure player move is between 1 and 4
-        selected_move = int(console.input("Choose your move [1-4]: "))
-        selected_move -= 1
-        if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
-            player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
-            move_selected = True
+    for count, move in enumerate(player_pokemon.moveset):
+        console.print(
+            f"{count + 1} : {move} \n \t "
+            + f"{move.stats['pp_left']}/{move.stats['total_pp']}"
+        )
+        time.sleep(0.3)
+    console.print()
+    while not is_move_selected:
+        selected_move_string = console.input("Choose your move [1-4]: ")
+        possible_selections = [str(move_no) for move_no in range(1, 5)]
+        if selected_move_string in possible_selections:
+            selected_move = int(selected_move_string) - 1
+            if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
+                player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
+                is_move_selected = True
+            else:
+                console.input("There's no PP left ▼")
         else:
-            console.print("\n")
-            console.print("There's no PP left")
-            time.sleep(1)
+            console.input("Invalid move choice ▼")
     return selected_move
 
 
@@ -143,21 +144,14 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
     print("\n")
     wait_for_input(f"{player_pokemon}, 's turn ▼")
-
     selected_move = choose_move(player_pokemon)
-    print("\n")
-    # time.sleep(1)
     apply_move(player_pokemon, enemy_pokemon, selected_move)
-    # time.sleep(2)
-    print("\n")
     if enemy_pokemon.health_points <= 0:
         enemy_remaining_pokemon.remove(enemy_pokemon)
         if len(enemy_remaining_pokemon) > 0:
             enemy_pokemon = enemy_remaining_pokemon[0]
-            console.print(f"Enemy chooses {enemy_pokemon}")
-            time.sleep(1)
-            print("\n")
-            console.print(player_pokemon, " VS ", enemy_pokemon)
+            console.input(f"Enemy chooses {enemy_pokemon} ▼")
+            console.input(f"{player_pokemon}  VS  {enemy_pokemon} ▼")
             time.sleep(1)
         else:
             enemy_pokemon = None
