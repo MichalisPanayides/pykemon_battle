@@ -21,3 +21,5 @@ from .text_display import (
     wait_for_input,
     console,
 )
+
+from .terminal_background import change_terminal_background

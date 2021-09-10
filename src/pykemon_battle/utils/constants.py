@@ -360,3 +360,23 @@ TYPE_EFFECTS = {
         "fairy": 1,
     },
 }
+
+
+TERMINAL_BACKGROUND_CORRECTIONS = {
+    "mr-mime": "mr.mime",
+    "farfetchd": "farfetch'd",
+    "deoxys-normal": "deoxys",
+    "wormadam-plant": "Wormadam",
+    "mime-jr": "mimejr",
+    "giratina-altered": "giratina",
+    "shaymin-land": "shaymin",
+    "basculin-red-striped": "Basculin",
+    "darmanitan-standard": "darmanitan",
+    "tornadus-incarnate": "Tornadus",
+    "thundurus-incarnate": "Thundurus",
+    "landorus-incarnate": "Landorus",
+    "keldeo-ordinary": "Keldeo",
+    "meloetta-aria": "Meloetta",
+    "meowstic-male": "Meowstic",
+    "aegislash-shield": "Aegislash",
+}

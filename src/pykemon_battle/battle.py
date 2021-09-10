@@ -1,6 +1,4 @@
-import os
 import random
-import time
 
 # from .move import Move
 from .pokemon import Pokemon
@@ -12,6 +10,7 @@ from .utils import (
     wait_for_input,
     display_text,
     console,
+    change_terminal_background,
 )
 
 
@@ -96,7 +95,7 @@ class Battle:
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
             clear_screen()
             if terminal_change:
-                os.system(f"pokemon {player_pokemon.name}")
+                change_terminal_background(player_pokemon)
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
             print("\n")
             if player_turn:
