@@ -78,7 +78,6 @@ class Battle:
         Start the battle
         """
         clear_screen()
-        style = "bold"
         with console.status("", spinner="aesthetic"):
             display_text("Fetching enemy details")
             self.choose_dificulty()
