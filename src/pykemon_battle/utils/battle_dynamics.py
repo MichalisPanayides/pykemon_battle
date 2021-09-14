@@ -182,13 +182,21 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
             display_text("Which pokemon do you choose?")
             for i, poke in enumerate(player_remaining_pokemon):
                 display_text(text=f"{i + 1} :  {poke}")
-            poke_choice_string = display_text(
-                text="Choose a pokemon: ", user_input=True, include_arrow=False
-            )
-            # TODO: Add while loop to ensure correct input
-            poke_choice = int(poke_choice_string)
-            poke_choice -= 1
-            player_pokemon = player_remaining_pokemon[poke_choice]
+            is_pokemon_selected = False
+            while not is_pokemon_selected:
+                poke_choice_string = display_text(
+                    text="Choose a pokemon: ", user_input=True, include_arrow=False
+                )
+                possible_selections = [
+                    str(poke_no)
+                    for poke_no in range(1, len(player_remaining_pokemon) + 1)
+                ]
+                if poke_choice_string in possible_selections:
+                    is_pokemon_selected = True
+                    poke_choice = int(poke_choice_string) - 1
+                    player_pokemon = player_remaining_pokemon[poke_choice]
+                else:
+                    display_text(text="Invalid pokemon choice", user_input=True)
             clear_screen()
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
     return player_pokemon, player_remaining_pokemon
