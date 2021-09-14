@@ -183,13 +183,10 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     return enemy_pokemon, enemy_remaining_pokemon
 
 
-def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
+def pokemon_fainted(player_pokemon, enemy_pokemon, player_remaining_pokemon):
     """
-    Logic of the enemy turn
+    Actions to take when player's pokemon faints
     """
-    display_text(text=f"{enemy_pokemon} 's turn", user_input=True, animate=True)
-    enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
-    apply_move(enemy_pokemon, player_pokemon, enemy_move)
     if player_pokemon.health_points <= 0:
         player_remaining_pokemon.remove(player_pokemon)
         if len(player_remaining_pokemon) > 0:
@@ -221,4 +218,20 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
                     )
             clear_screen()
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+    return player_pokemon, player_remaining_pokemon
+
+
+def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
+    """
+    Logic of the enemy turn
+    """
+    display_text(text=f"{enemy_pokemon} 's turn", user_input=True, animate=True)
+    enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
+    apply_move(enemy_pokemon, player_pokemon, enemy_move)
+    player_pokemon, player_remaining_pokemon = pokemon_fainted(
+        player_pokemon=player_pokemon,
+        enemy_pokemon=enemy_pokemon,
+        player_remaining_pokemon=player_remaining_pokemon,
+    )
+
     return player_pokemon, player_remaining_pokemon

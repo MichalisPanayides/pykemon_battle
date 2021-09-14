@@ -72,6 +72,6 @@ def display_text(
             out = py_console.input("▼")
         else:
             out = py_console.input("")
-        py_console.print("\033[A", " " * (len(text) + 2), "\033[A")
+        py_console.print("\033[A", " " * (len(text) + len(out) + 3), "\033[A")
         return out
     return None
