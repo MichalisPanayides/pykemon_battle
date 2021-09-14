@@ -42,8 +42,8 @@ def animate_text(console, text):
     Function to animate text
     """
     delay = 0.15 / len(text)
-    for c in str(text) + " ":
-        console.print(c, end="")
+    for character in str(text) + " ":
+        console.print(character, end="")
         sys.stdout.flush()
         time.sleep(delay)
 
