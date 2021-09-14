@@ -152,9 +152,6 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     """
     Logic of the player turn
     """
-    # clear_screen()
-    # show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-    # print("\n")
     display_text(text=f"{player_pokemon} 's turn", user_input=True)
     selected_move = choose_move(player_pokemon)
     apply_move(player_pokemon, enemy_pokemon, selected_move)
@@ -166,8 +163,6 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
             print("\n")
             display_text(text=f"Enemy chooses {enemy_pokemon}", user_input=True)
-        else:
-            enemy_pokemon = None
     return enemy_pokemon, enemy_remaining_pokemon
 
 
@@ -175,9 +170,6 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
     """
     Logic of the enemy turn
     """
-    # clear_screen()
-    # show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-    # print("\n")
     display_text(text=f"{enemy_pokemon} 's turn", user_input=True)
     enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
     apply_move(enemy_pokemon, player_pokemon, enemy_move)
@@ -199,6 +191,4 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
             player_pokemon = player_remaining_pokemon[poke_choice]
             clear_screen()
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-        else:
-            player_pokemon = None
     return player_pokemon, player_remaining_pokemon
