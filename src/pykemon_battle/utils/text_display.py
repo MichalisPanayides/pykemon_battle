@@ -4,9 +4,6 @@ import numpy as np
 from rich.console import Console
 
 
-console = Console(highlight=False)
-
-
 def show_health_bar(pokemon_1, pokemon_2):
     """
     Function to display health points of the battling pokemon
@@ -38,16 +35,25 @@ def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-def display_text(text, style="bold white on black"):
+def display_text(
+    text, user_input=False, style="bold white on black", include_arrow=True
+):
     """
     Function to display text in the terminal
     """
-    console.print(text, style=style)
-
-
-def wait_for_input(text, style="bold white on black"):
-    """
-    Function to wait for user input
-    """
-    py_console = Console(style=style, highlight=False)
-    return py_console.input(text)
+    # if delete_line:
+    #     sys.stdout.write("\033[K")  # Cursor up one line
+    if user_input:
+        custom_end = " "
+    else:
+        custom_end = "\n"
+    py_console = Console(highlight=False, style=style)
+    py_console.print(text, end=custom_end)
+    if user_input:
+        if include_arrow:
+            out = py_console.input("▼")
+        else:
+            out = py_console.input("")
+        py_console.print("\033[A", " " * (len(text) + 2), "\033[A")
+        return out
+    return None

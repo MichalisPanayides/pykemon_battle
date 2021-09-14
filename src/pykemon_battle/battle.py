@@ -1,5 +1,7 @@
 import random
 
+from rich.console import Console
+
 # from .move import Move
 from .pokemon import Pokemon
 from .utils import (
@@ -7,11 +9,11 @@ from .utils import (
     player_turn_logic,
     show_health_bar,
     clear_screen,
-    wait_for_input,
     display_text,
-    console,
     change_terminal_background,
 )
+
+console = Console(highlight=False)
 
 
 class Battle:
@@ -81,7 +83,7 @@ class Battle:
         with console.status("", spinner="aesthetic"):
             display_text("Fetching enemy details")
             self.choose_dificulty()
-        wait_for_input(text="Your opponent is ready ▼ ")
+        display_text(text="Your opponent is ready", user_input=True)
 
         player_remaining_pokemon = self.team.copy()
         enemy_remaining_pokemon = self.enemy_team.copy()
@@ -91,12 +93,12 @@ class Battle:
 
         player_turn = player_pokemon.stats["speed"] >= enemy_pokemon.stats["speed"]
 
+        clear_screen()
+        show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+        print("\n")
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
-            clear_screen()
             if terminal_change:
                 change_terminal_background(player_pokemon)
-            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-            print("\n")
             if player_turn:
                 enemy_pokemon, enemy_remaining_pokemon = player_turn_logic(
                     player_pokemon, enemy_pokemon, enemy_remaining_pokemon
@@ -106,6 +108,9 @@ class Battle:
                     player_pokemon, enemy_pokemon, player_remaining_pokemon
                 )
             player_turn = not player_turn
+            clear_screen()
+            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+            print("\n")
 
         if len(player_remaining_pokemon) > 0:
             display_text("You won!")

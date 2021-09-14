@@ -18,8 +18,6 @@ from .text_display import (
     display_text,
     show_health_bar,
     clear_screen,
-    wait_for_input,
-    console,
 )
 
 from .terminal_background import change_terminal_background
