@@ -1,9 +1,19 @@
 import random
-import time
+
+from rich.console import Console
 
 # from .move import Move
 from .pokemon import Pokemon
-from .utils import enemy_turn_logic, player_turn_logic, show_health_bar
+from .utils import (
+    enemy_turn_logic,
+    player_turn_logic,
+    show_health_bar,
+    clear_screen,
+    display_text,
+    change_terminal_background,
+)
+
+console = Console(highlight=False)
 
 
 class Battle:
@@ -36,7 +46,7 @@ class Battle:
                 try:
                     current_pokemon = Pokemon(pokemon_id)
                 except ValueError:
-                    print("Invalid input")
+                    display_text("Invalid input")
                     continue
             current_pokemon.get_moves(move_selection=move_selection)
             self.team.append(current_pokemon)
@@ -45,7 +55,7 @@ class Battle:
         """
         Choose the difficulty of the battle
         """
-        # TODO: Implent all the difficulities
+        # TODO: Implement all the difficulities
         # diff = input(
         #     "Choose the difficulty: \n1: Random \n2: Easy \n3: Hard \nAnswer : "
         # )
@@ -65,25 +75,15 @@ class Battle:
         else:
             raise NotImplementedError
 
-    def start_battle(self):
+    def start_battle(self, terminal_change=False):
         """
         Start the battle
         """
-        print("Fetching enemy details")
-        self.choose_dificulty()
-        print("Your opponent is ready")
-        time.sleep(0.5)
-
-        print("Trainers. Prepare your teams:")
-        time.sleep(1.5)
-        print("3")
-        time.sleep(0.8)
-        print("2")
-        time.sleep(0.8)
-        print("1")
-        time.sleep(1)
-        print("FIGHT")
-        time.sleep(1)
+        clear_screen()
+        with console.status("", spinner="aesthetic"):
+            display_text("Fetching enemy details")
+            self.choose_dificulty()
+        display_text(text="Your opponent is ready", user_input=True, animate=True)
 
         player_remaining_pokemon = self.team.copy()
         enemy_remaining_pokemon = self.enemy_team.copy()
@@ -93,11 +93,12 @@ class Battle:
 
         player_turn = player_pokemon.stats["speed"] >= enemy_pokemon.stats["speed"]
 
+        clear_screen()
+        show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+        print("\n")
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
-            print("\n")
-            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-            time.sleep(2)
-            print("\n")
+            if terminal_change:
+                change_terminal_background(player_pokemon)
             if player_turn:
                 enemy_pokemon, enemy_remaining_pokemon = player_turn_logic(
                     player_pokemon, enemy_pokemon, enemy_remaining_pokemon
@@ -107,8 +108,11 @@ class Battle:
                     player_pokemon, enemy_pokemon, player_remaining_pokemon
                 )
             player_turn = not player_turn
+            clear_screen()
+            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+            print("\n")
 
         if len(player_remaining_pokemon) > 0:
-            print("You won!")
+            display_text("You won!")
         else:
-            print("You lost!")
+            display_text("You lost!")
