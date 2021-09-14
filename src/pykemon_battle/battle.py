@@ -1,4 +1,5 @@
 import random
+import re
 
 from rich.console import Console
 
@@ -43,11 +44,19 @@ class Battle:
             current_pokemon = None
             while current_pokemon is None:
                 pokemon_id = input(f"Choose pokemon {team_index + 1} by id or name: ")
-                try:
-                    current_pokemon = Pokemon(pokemon_id)
-                except ValueError:
-                    display_text("Invalid input")
-                    continue
+                sanitized_pokemon_id = re.search(r"^\d{1,3}$",pokemon_id)
+                if (sanitized_pokemon_id is not None):
+                    if ( int(sanitized_pokemon_id.group()) in range(1,899) ):
+                        current_pokemon = Pokemon(sanitized_pokemon_id.group())
+                    else:
+                        print("Pokemon id should be between 1-898.")
+                else:
+                    print("Invalid input.")
+                # try:
+                #     current_pokemon = Pokemon(pokemon_id)
+                # except ValueError:
+                #     display_text("Invalid input")
+                #     continue
             current_pokemon.get_moves(move_selection=move_selection)
             self.team.append(current_pokemon)
 
