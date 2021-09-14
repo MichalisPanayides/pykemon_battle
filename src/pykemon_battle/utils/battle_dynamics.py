@@ -3,55 +3,43 @@ import random
 import time
 
 from .constants import TYPE_EFFECTS
-
-
-def show_health_bar(pokemon_1, pokemon_2):
-    """
-    Function to display health points of the battling pokemon
-    """
-    bar_1_length = int(pokemon_1.health_points / 3)
-    bar_2_length = int(pokemon_2.health_points / 3)
-    health_text_1, health_text_2 = (
-        f"HP: {pokemon_1.health_points}/{pokemon_1.json['stats'][0]['base_stat']} ",
-        f"HP: {pokemon_2.health_points}/{pokemon_2.json['stats'][0]['base_stat']} ",
-    )
-    health_bar_1, health_bar_2 = "", ""
-    for _ in range(bar_1_length):
-        health_bar_1 += "#"
-    for _ in range(bar_2_length):
-        health_bar_2 += "#"
-    print(pokemon_1)
-    print(health_bar_1)
-    print(health_text_1)
-    print()
-    print(pokemon_2)
-    print(health_bar_2)
-    print(health_text_2)
+from .text_display import (
+    show_health_bar,
+    clear_screen,
+    display_text,
+)
 
 
 def choose_move(player_pokemon):
     """
     Choose one of the 4 moves
     """
-    move_selected = False
-    while not move_selected:
-        for count, move in enumerate(player_pokemon.moveset):
-            print(
-                f"{count + 1} : {move} \n \t "
-                + f"{move.stats['pp_left']}/{move.stats['total_pp']}"
-            )
-            time.sleep(0.3)
-        print("\n")
-        # TODO: Make sure player move is between 1 and 4
-        selected_move = int(input("Choose your move [1-4]: "))
-        selected_move -= 1
-        if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
-            player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
-            move_selected = True
+    is_move_selected = False
+    display_text(text="Choose your move: \n")
+    for count, move in enumerate(player_pokemon.moveset):
+        display_text(
+            text=f"{count + 1} : {move} \n \t "
+            + f"{move.stats['pp_left']}/{move.stats['total_pp']}",
+        )
+        time.sleep(0.2)
+    display_text(text="")
+    while not is_move_selected:
+        selected_move_string = display_text(
+            text="Choose your move [1-4]: ",
+            user_input=True,
+            include_arrow=False,
+            animate=True,
+        )
+        possible_selections = [str(move_no) for move_no in range(1, 5)]
+        if selected_move_string in possible_selections:
+            selected_move = int(selected_move_string) - 1
+            if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
+                player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
+                is_move_selected = True
+            else:
+                display_text(text="There's no PP left", user_input=True, animate=True)
         else:
-            print("\n")
-            print("There's no PP left")
-            time.sleep(1)
+            display_text(text="Invalid move choice", user_input=True, animate=True)
     return selected_move
 
 
@@ -96,9 +84,6 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
     """
     Apply the move to the enemy pokemon
     """
-    print(f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}")
-    print("\n")
-    time.sleep(1)
 
     attack_variables = {}
     attack_variables["move_power"] = attacking_pokemon.moveset[move].stats["power"]
@@ -120,6 +105,11 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
     attack_variables["modifier"] = math.prod(type_effects)
     attack_variables["stochasticity"] = random.randint(217, 255)
 
+    display_text(
+        text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}",
+        user_input=True,
+        animate=True,
+    )
     if attack_variables["move_power"] is not None:
         damage = damage_function(variables=attack_variables)
         move_accuracy = (
@@ -127,34 +117,48 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
             if attacking_pokemon.moveset[move].stats["accuracy"] is not None
             else 100
         )
+
         if random.random() < (move_accuracy / 100):
-            print(f"Damage: {damage}")
-            print("\n")
             defending_pokemon.health_points = defending_pokemon.health_points - damage
             if attack_variables["modifier"] == 1:
-                print("It's effective")
+                display_text(
+                    text=f"It's effective! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
+                )
             elif attack_variables["modifier"] >= 2:
-                print("It's supper effective!")
+                display_text(
+                    text=f"It's super effective! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
+                )
             elif 0 < attack_variables["modifier"] <= 0.5:
-                print("It's not very effective!")
+                display_text(
+                    text=f"It's not very effective! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
+                )
             elif attack_variables["modifier"] == 0:
-                print("But it failed!")
+                display_text(
+                    text=f"But it failed! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
+                )
             else:
                 raise ValueError("Invalid modifier value")
         else:
-            print("Attack missed!")
+            display_text(text="Attack missed!", user_input=True, animate=True)
     else:
-        print("Unfortunately this move has not been implemented yet. Sorry")
-    print("\n")
+        display_text(
+            text="Unfortunately this move has not been implemented yet. Sorry.",
+            user_input=True,
+            animate=True,
+        )
 
     if defending_pokemon.health_points <= 0:
-        time.sleep(1.5)
-        show_health_bar(pokemon_1=attacking_pokemon, pokemon_2=defending_pokemon)
-        print(f"{defending_pokemon} fainted")
-        print("\n")
+        display_text(text=f"{defending_pokemon} fainted", user_input=True, animate=True)
         defending_pokemon.health_points = 0
         defending_pokemon.stats = "inactive"
-        defending_pokemon.fainted = True
 
     return defending_pokemon.health_points
 
@@ -163,25 +167,19 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     """
     Logic of the player turn
     """
-    print(player_pokemon, "'s turn:")
-    time.sleep(1)
+    display_text(text=f"{player_pokemon} 's turn", user_input=True, animate=True)
     selected_move = choose_move(player_pokemon)
-    print("\n")
-    time.sleep(1)
     apply_move(player_pokemon, enemy_pokemon, selected_move)
-    time.sleep(2)
-    print("\n")
     if enemy_pokemon.health_points <= 0:
         enemy_remaining_pokemon.remove(enemy_pokemon)
         if len(enemy_remaining_pokemon) > 0:
             enemy_pokemon = enemy_remaining_pokemon[0]
-            print(f"Enemy chooses {enemy_pokemon}")
-            time.sleep(1)
+            clear_screen()
+            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
             print("\n")
-            print(player_pokemon, " VS ", enemy_pokemon)
-            time.sleep(1)
-        else:
-            enemy_pokemon = None
+            display_text(
+                text=f"Enemy chooses {enemy_pokemon}", user_input=True, animate=True
+            )
     return enemy_pokemon, enemy_remaining_pokemon
 
 
@@ -189,25 +187,38 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
     """
     Logic of the enemy turn
     """
-    print(enemy_pokemon, "'s turn:")
-    time.sleep(1)
+    display_text(text=f"{enemy_pokemon} 's turn", user_input=True, animate=True)
     enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
-    print("\n")
     apply_move(enemy_pokemon, player_pokemon, enemy_move)
-    time.sleep(1)
     if player_pokemon.health_points <= 0:
         player_remaining_pokemon.remove(player_pokemon)
         if len(player_remaining_pokemon) > 0:
-            print("Which pokemon do you choose?")
-            time.sleep(0.7)
+            clear_screen()
+            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
+            print("\n")
+            display_text("Which pokemon do you choose?")
             for i, poke in enumerate(player_remaining_pokemon):
-                print(i + 1, ": ", poke)
-                time.sleep(0.3)
-            poke_choice = int(input("Choose a pokemon: "))
-            poke_choice -= 1
-            player_pokemon = player_remaining_pokemon[poke_choice]
-            print(player_pokemon, " VS ", enemy_pokemon)
-            time.sleep(1)
-        else:
-            player_pokemon = None
+                display_text(text=f"{i + 1} :  {poke}")
+            is_pokemon_selected = False
+            while not is_pokemon_selected:
+                poke_choice_string = display_text(
+                    text="Choose a pokemon: ",
+                    user_input=True,
+                    animate=True,
+                    include_arrow=False,
+                )
+                possible_selections = [
+                    str(poke_no)
+                    for poke_no in range(1, len(player_remaining_pokemon) + 1)
+                ]
+                if poke_choice_string in possible_selections:
+                    is_pokemon_selected = True
+                    poke_choice = int(poke_choice_string) - 1
+                    player_pokemon = player_remaining_pokemon[poke_choice]
+                else:
+                    display_text(
+                        text="Invalid pokemon choice", user_input=True, animate=True
+                    )
+            clear_screen()
+            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
     return player_pokemon, player_remaining_pokemon

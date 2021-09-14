@@ -8,8 +8,16 @@ from .utilities import (
 )
 
 from .battle_dynamics import (
-    show_health_bar,
+    choose_move,
     apply_move,
     player_turn_logic,
     enemy_turn_logic,
 )
+
+from .text_display import (
+    display_text,
+    show_health_bar,
+    clear_screen,
+)
+
+from .terminal_background import change_terminal_background

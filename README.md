@@ -23,7 +23,7 @@ A text-based Pokémon battling system
 
 
 ## About The Project
-`pykemmon_battle` is a library that provides a text-based Pokémon battling system. 
+`pykemon_battle` is a library that provides a text-based Pokémon battling system. 
 
 
 ## Installation
