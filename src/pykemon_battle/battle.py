@@ -83,7 +83,7 @@ class Battle:
         with console.status("", spinner="aesthetic"):
             display_text("Fetching enemy details")
             self.choose_dificulty()
-        display_text(text="Your opponent is ready", user_input=True)
+        display_text(text="Your opponent is ready", user_input=True, animate=True)
 
         player_remaining_pokemon = self.team.copy()
         enemy_remaining_pokemon = self.enemy_team.copy()

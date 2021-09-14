@@ -1,4 +1,6 @@
 import os
+import sys
+import time
 
 import numpy as np
 from rich.console import Console
@@ -35,20 +37,36 @@ def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
+def animate_text(console, text):
+    """
+    Function to animate text
+    """
+    delay = 0.15 / len(text)
+    for c in str(text) + " ":
+        console.print(c, end="")
+        sys.stdout.flush()
+        time.sleep(delay)
+
+
 def display_text(
-    text, user_input=False, style="bold white on black", include_arrow=True
+    text,
+    user_input=False,
+    animate=False,
+    style="bold white on black",
+    include_arrow=True,
 ):
     """
     Function to display text in the terminal
     """
-    # if delete_line:
-    #     sys.stdout.write("\033[K")  # Cursor up one line
     if user_input:
         custom_end = " "
     else:
         custom_end = "\n"
     py_console = Console(highlight=False, style=style)
-    py_console.print(text, end=custom_end)
+    if animate:
+        animate_text(console=py_console, text=text)
+    else:
+        py_console.print(text, end=custom_end)
     if user_input:
         if include_arrow:
             out = py_console.input("▼")

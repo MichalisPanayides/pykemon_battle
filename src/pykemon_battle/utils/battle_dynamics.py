@@ -25,7 +25,10 @@ def choose_move(player_pokemon):
     display_text(text="")
     while not is_move_selected:
         selected_move_string = display_text(
-            text="Choose your move [1-4]: ", user_input=True, include_arrow=False
+            text="Choose your move [1-4]: ",
+            user_input=True,
+            include_arrow=False,
+            animate=True,
         )
         possible_selections = [str(move_no) for move_no in range(1, 5)]
         if selected_move_string in possible_selections:
@@ -34,9 +37,9 @@ def choose_move(player_pokemon):
                 player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
                 is_move_selected = True
             else:
-                display_text(text="There's no PP left", user_input=True)
+                display_text(text="There's no PP left", user_input=True, animate=True)
         else:
-            display_text(text="Invalid move choice", user_input=True)
+            display_text(text="Invalid move choice", user_input=True, animate=True)
     return selected_move
 
 
@@ -105,6 +108,7 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
     display_text(
         text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}",
         user_input=True,
+        animate=True,
     )
     if attack_variables["move_power"] is not None:
         damage = damage_function(variables=attack_variables)
@@ -118,30 +122,41 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
             defending_pokemon.health_points = defending_pokemon.health_points - damage
             if attack_variables["modifier"] == 1:
                 display_text(
-                    text=f"It's effective! (Damage: {damage})", user_input=True
+                    text=f"It's effective! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
                 )
             elif attack_variables["modifier"] >= 2:
                 display_text(
-                    text=f"It's super effective! (Damage: {damage})", user_input=True
+                    text=f"It's super effective! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
                 )
             elif 0 < attack_variables["modifier"] <= 0.5:
                 display_text(
-                    text=f"It's not very effective! (Damage: {damage})", user_input=True
+                    text=f"It's not very effective! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
                 )
             elif attack_variables["modifier"] == 0:
-                display_text(text=f"But it failed! (Damage: {damage})", user_input=True)
+                display_text(
+                    text=f"But it failed! (Damage: {damage})",
+                    user_input=True,
+                    animate=True,
+                )
             else:
                 raise ValueError("Invalid modifier value")
         else:
-            display_text(text="Attack missed!", user_input=True)
+            display_text(text="Attack missed!", user_input=True, animate=True)
     else:
         display_text(
             text="Unfortunately this move has not been implemented yet. Sorry.",
             user_input=True,
+            animate=True,
         )
 
     if defending_pokemon.health_points <= 0:
-        display_text(text=f"{defending_pokemon} fainted", user_input=True)
+        display_text(text=f"{defending_pokemon} fainted", user_input=True, animate=True)
         defending_pokemon.health_points = 0
         defending_pokemon.stats = "inactive"
 
@@ -152,7 +167,7 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
     """
     Logic of the player turn
     """
-    display_text(text=f"{player_pokemon} 's turn", user_input=True)
+    display_text(text=f"{player_pokemon} 's turn", user_input=True, animate=True)
     selected_move = choose_move(player_pokemon)
     apply_move(player_pokemon, enemy_pokemon, selected_move)
     if enemy_pokemon.health_points <= 0:
@@ -162,7 +177,9 @@ def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
             clear_screen()
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
             print("\n")
-            display_text(text=f"Enemy chooses {enemy_pokemon}", user_input=True)
+            display_text(
+                text=f"Enemy chooses {enemy_pokemon}", user_input=True, animate=True
+            )
     return enemy_pokemon, enemy_remaining_pokemon
 
 
@@ -170,7 +187,7 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
     """
     Logic of the enemy turn
     """
-    display_text(text=f"{enemy_pokemon} 's turn", user_input=True)
+    display_text(text=f"{enemy_pokemon} 's turn", user_input=True, animate=True)
     enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
     apply_move(enemy_pokemon, player_pokemon, enemy_move)
     if player_pokemon.health_points <= 0:
@@ -185,7 +202,10 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
             is_pokemon_selected = False
             while not is_pokemon_selected:
                 poke_choice_string = display_text(
-                    text="Choose a pokemon: ", user_input=True, include_arrow=False
+                    text="Choose a pokemon: ",
+                    user_input=True,
+                    animate=True,
+                    include_arrow=False,
                 )
                 possible_selections = [
                     str(poke_no)
@@ -196,7 +216,9 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
                     poke_choice = int(poke_choice_string) - 1
                     player_pokemon = player_remaining_pokemon[poke_choice]
                 else:
-                    display_text(text="Invalid pokemon choice", user_input=True)
+                    display_text(
+                        text="Invalid pokemon choice", user_input=True, animate=True
+                    )
             clear_screen()
             show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
     return player_pokemon, player_remaining_pokemon
