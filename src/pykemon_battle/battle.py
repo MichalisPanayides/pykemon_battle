@@ -24,9 +24,15 @@ class Battle:
     Class that contains the battle logic of the game
     """
 
-    def __init__(self, team_size=6):
-        self.get_team(team_size=team_size)
-        self.enemy_team = None
+    def __init__(self, team_size=6, team=None):
+        if team is None:
+            self.get_team(team_size=team_size)
+        else:
+            for pokemon in team:
+                if not isinstance(pokemon, Pokemon):
+                    raise TypeError("Team must be a list of Pokemon objects")
+            self.team = team
+        self.build_enemy_team(difficulty="random")
 
     def get_team(self, team_size=6):
         """
@@ -63,39 +69,28 @@ class Battle:
             current_pokemon.get_moves(move_selection=move_selection)
             self.team.append(current_pokemon)
 
-    def choose_dificulty(self):
-        """
-        Choose the difficulty of the battle
-        """
-        # TODO: Implement all the difficulities
-        # diff = input(
-        #     "Choose the difficulty: \n1: Random \n2: Easy \n3: Hard \nAnswer : "
-        # )
-        difficulty = "random"
-        self.build_enemy_team(difficulty=difficulty)
-
     def build_enemy_team(self, difficulty):
         """
         Build the enemy team
         """
-        if difficulty == "random":
-            self.enemy_team = []
-            for _ in range(len(self.team)):
-                enemy_pokemon = Pokemon(np.random.randint(1, 152))
-                enemy_pokemon.get_moves(move_selection="random")
-                self.enemy_team.append(enemy_pokemon)
-        else:
-            raise NotImplementedError
+        self.enemy_team = []
+        with console.status("", spinner="aesthetic"):
+            display_text("Fetching enemy details")
+            # TODO: Implement all the difficulities
+            if difficulty == "random":
+                for _ in range(len(self.team)):
+                    enemy_pokemon = Pokemon(np.random.randint(1, 152))
+                    enemy_pokemon.get_moves(move_selection="random")
+                    self.enemy_team.append(enemy_pokemon)
+            else:
+                raise NotImplementedError
+        display_text(text="Your opponent is ready", user_input=True, animate=True)
 
     def start_battle(self, terminal_change=False):
         """
         Start the battle
         """
         clear_screen()
-        with console.status("", spinner="aesthetic"):
-            display_text("Fetching enemy details")
-            self.choose_dificulty()
-        display_text(text="Your opponent is ready", user_input=True, animate=True)
 
         player_remaining_pokemon = self.team.copy()
         enemy_remaining_pokemon = self.enemy_team.copy()
@@ -110,7 +105,9 @@ class Battle:
         print("\n")
         while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
             if terminal_change:
-                change_terminal_background(player_pokemon)
+                change_terminal_background(
+                    player_pokemon if player_turn else enemy_pokemon
+                )
             if player_turn:
                 enemy_pokemon, enemy_remaining_pokemon = player_turn_logic(
                     player_pokemon, enemy_pokemon, enemy_remaining_pokemon
