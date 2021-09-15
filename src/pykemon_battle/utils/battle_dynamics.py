@@ -1,6 +1,7 @@
 import math
-import random
 import time
+
+import numpy as np
 
 from .constants import TYPE_EFFECTS
 from .text_display import (
@@ -64,7 +65,7 @@ def damage_function(variables):
     modifier : int, optional
         Modifier based on type effectveness, by default 10
     stochastic : int, optional
-        A random number, by default random.randint(217, 255)
+        A random number, by default np.random.randint(217, 256)
     """
     stab = 1.5 if variables["same_type_advantage"] else 1
 
@@ -103,7 +104,7 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
         TYPE_EFFECTS[attack_variables["move_type"]][type_i] for type_i in defender_type
     )
     attack_variables["modifier"] = math.prod(type_effects)
-    attack_variables["stochasticity"] = random.randint(217, 255)
+    attack_variables["stochasticity"] = np.random.randint(217, 256)
 
     display_text(
         text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}",
@@ -118,7 +119,7 @@ def apply_move(attacking_pokemon, defending_pokemon, move):
             else 100
         )
 
-        if random.random() < (move_accuracy / 100):
+        if np.random.random() < (move_accuracy / 100):
             defending_pokemon.health_points = defending_pokemon.health_points - damage
             if attack_variables["modifier"] == 1:
                 display_text(
@@ -226,7 +227,7 @@ def enemy_turn_logic(player_pokemon, enemy_pokemon, player_remaining_pokemon):
     Logic of the enemy turn
     """
     display_text(text=f"{enemy_pokemon} 's turn", user_input=True, animate=True)
-    enemy_move = random.randint(0, len(enemy_pokemon.moveset) - 1)
+    enemy_move = np.random.randint(len(enemy_pokemon.moveset))
     apply_move(enemy_pokemon, player_pokemon, enemy_move)
     player_pokemon, player_remaining_pokemon = pokemon_fainted(
         player_pokemon=player_pokemon,

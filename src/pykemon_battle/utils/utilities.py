@@ -52,6 +52,7 @@ def randomly_choose_moveset(all_moves):
     """
     Returns a tuple of four moves
     """
+    # TODO: Add replace=False
     moveset = np.random.choice(all_moves, 4)
     moveset = tuple(move["move"]["name"] for move in moveset)
 

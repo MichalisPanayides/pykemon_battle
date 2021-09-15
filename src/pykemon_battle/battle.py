@@ -1,5 +1,6 @@
-import random
 import re
+
+import numpy as np
 
 from rich.console import Console
 
@@ -80,7 +81,7 @@ class Battle:
         if difficulty == "random":
             self.enemy_team = []
             for _ in range(len(self.team)):
-                enemy_pokemon = Pokemon(random.randint(1, 151))
+                enemy_pokemon = Pokemon(np.random.randint(1, 152))
                 enemy_pokemon.get_moves(move_selection="random")
                 self.enemy_team.append(enemy_pokemon)
         else:
