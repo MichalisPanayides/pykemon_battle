@@ -1,4 +1,5 @@
 import random
+import re
 
 from rich.console import Console
 
@@ -14,6 +15,7 @@ from .utils import (
 )
 
 console = Console(highlight=False)
+TOTAL_POKEMON = 898
 
 
 class Battle:
@@ -31,23 +33,32 @@ class Battle:
         """
         self.team = []
         # TODO: Implement the multiple move selections
-        # move_selection = input(
-        #     "Your team's moveset will be selected: "
-        #     "\n1: Automatic"
-        #     "\n2: Manual"
-        #     "\n3: Random"
-        #     "\nAnswer : "
-        # )
         move_selection = "random"
         for team_index in range(team_size):
             current_pokemon = None
             while current_pokemon is None:
-                pokemon_id = input(f"Choose pokemon {team_index + 1} by id or name: ")
-                try:
-                    current_pokemon = Pokemon(pokemon_id)
-                except ValueError:
-                    display_text("Invalid input")
-                    continue
+                pokemon_id = display_text(
+                    f"Choose pokemon {team_index + 1} by id or name:",
+                    user_input=True,
+                    include_arrow=False,
+                    animate=True,
+                )
+                sanitized_pokemon_id = re.search(r"\d{1,3}$", pokemon_id)
+                if sanitized_pokemon_id is not None:
+                    if int(sanitized_pokemon_id.group()) in range(1, TOTAL_POKEMON + 1):
+                        current_pokemon = Pokemon(int(sanitized_pokemon_id.group()))
+                    else:
+                        display_text(
+                            f"Pokemon id should be between 1-{TOTAL_POKEMON}.",
+                            user_input=True,
+                            animate=True,
+                        )
+                else:
+                    try:
+                        current_pokemon = Pokemon(pokemon_id)
+                    except ValueError:
+                        display_text("Invalid input.", user_input=True, animate=True)
+                        continue
             current_pokemon.get_moves(move_selection=move_selection)
             self.team.append(current_pokemon)
 
