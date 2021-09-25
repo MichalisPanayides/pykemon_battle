@@ -19,20 +19,64 @@ class Pokemon:
         self.name = self.json["name"]
         self.type = list(slot["type"]["name"] for slot in self.json["types"])
         self.heal()
-        self.reset()
+        self.reset_stats()
         self.moveset = None
 
         # self.get_moves()
 
-    def reset(self):
+    def reset_stats(self):
         """
         Resets the pokemon's health points to its base stat.
+
+        Possible values for volatile status:
+            "arena_trap": False,
+            "bound": False,
+            "confusion": False,
+            "curse": False,
+            "drowsy": False,
+            "embargo": False,
+            "encore": False,
+            "flinch": False,
+            "heal_block": False,
+            "identified": False,
+            "infactuation": False,
+            "leech_seed": False,
+            "nightmare": False,
+            "perish_song": False,
+            "taunted": False,
+            "telekinisis": False,
+            "torment": False,
+            "type_change": False,
+
+        Possible values for volatile battle status:
+            "Aqua Ring": False,
+            "Bracing": False,
+            "Charging turn": False,
+            "Center of attention": False,
+            "Defense Curl": False,
+            "Rooting": False,
+            "Magic Coat": False,
+            "Magnetic levitation": False,
+            "Mimic": False,
+            "Minimize": False,
+            "Protection": False,
+            "Recharging": False,
+            "Semi-invulnerable turn": False,
+            "Substitute": False,
+            "Taking aim": False,
+            "Thrashing": False,
+            "Transformed": False,
         """
+
         attack = self.json["stats"][1]["base_stat"]
         defense = self.json["stats"][2]["base_stat"]
         special_attack = self.json["stats"][3]["base_stat"]
         special_defense = self.json["stats"][4]["base_stat"]
         speed = self.json["stats"][5]["base_stat"]
+
+        self.volatile_status = {}
+        self.volatile_battle_status = {}
+
         self.stats = {
             "attack": attack,
             "defense": defense,
@@ -44,15 +88,23 @@ class Pokemon:
     def heal(self):
         """
         Heals the pokemon to its base stat.
+
+        Possible values for non-volatile status:
+            active, fainted, paralyzed, asleep, burned, poisoned
         """
         self.health_points = self.json["stats"][0]["base_stat"]
-        self.status = "active"
+        self.non_volatile_status = "active"
 
     def get_moves(self, move_selection="Random"):
         """
         Returns a list of moves that the pokemon can use.
         """
         all_possible_moves = self.json["moves"]
+        if len(all_possible_moves) == 0:
+            print("Name:", self.name)
+            print("Type:", self.type)
+            print("Id", self.json["id"])
+            print(all_possible_moves)
         if move_selection == "1" or move_selection.lower() == "automatic":
             selected_moves = choose_best_moveset(all_possible_moves)
         elif move_selection == "2" or move_selection.lower() == "manual":
