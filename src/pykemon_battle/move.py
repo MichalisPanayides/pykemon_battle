@@ -24,6 +24,7 @@ class Move:
             "priority": priority,
             "target": target,
         }
+        # TODO: Create new class Pokemon_move() that inherits Move() and split attributes between the two
         self.get_other_stats()
 
     def get_other_stats(self):

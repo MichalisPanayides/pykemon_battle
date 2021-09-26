@@ -100,11 +100,6 @@ class Pokemon:
         Returns a list of moves that the pokemon can use.
         """
         all_possible_moves = self.json["moves"]
-        if len(all_possible_moves) == 0:
-            print("Name:", self.name)
-            print("Type:", self.type)
-            print("Id", self.json["id"])
-            print(all_possible_moves)
         if move_selection == "1" or move_selection.lower() == "automatic":
             selected_moves = choose_best_moveset(all_possible_moves)
         elif move_selection == "2" or move_selection.lower() == "manual":
@@ -123,7 +118,3 @@ class Pokemon:
 
     def __repr__(self):
         return f"{self.name.capitalize()}"
-
-
-# demo_poke = Pokemon("Silcoon")
-# demo_poke.get_moves()
