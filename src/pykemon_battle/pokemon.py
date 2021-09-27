@@ -83,6 +83,7 @@ class Pokemon:
             "special_attack": special_attack,
             "special_defense": special_defense,
             "speed": speed,
+            "accuracy": 100,
         }
 
     def heal(self):
