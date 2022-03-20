@@ -9,28 +9,40 @@ def check_that_team_is_valid(team):
     """
     Check that the team is valid
     """
-    error_message = "Team must be a list of Pokemon objects"
     if type(team) is not list:
-        raise TypeError(error_message)
+        raise TypeError("team must be a list of Pokemon objects")
     for pokemon in team:
         if not isinstance(pokemon, Pokemon):
-            raise TypeError(error_message)
+            raise TypeError("team entries must be Pokemon objects")
 
 
 class Player:
-    def __init__(self, name="Stefanos", team=1):
+    def __init__(self, team=1, name="Ash"):
+        """
+        Creates a player object with a given team (or team size) and name
+
+        Parameters
+        ----------
+        team : int or list, optional
+            if int: get a random team of that size
+            if list: use the list as the current Pokemon team
+        name : str, optional
+            The name of the player, by default "Ash"
+        """
         self.name = name
-        if isinstance(team, int):
+        # TODO: Add upper bound to team size
+        if isinstance(team, int) and team > 0:
             self.get_random_team(team)
         elif isinstance(team, list):
             check_that_team_is_valid(team)
             self.team = team
         else:
             raise TypeError("Team must be a list or an int")
+        self.selected = self.team[0]
 
     def get_random_team(self, team_size):
         """
-        Randomly generates a team of pokemon
+        Randomly generates a team of pokemon with a given team size
         """
         self.team = []
         for _ in range(team_size):
@@ -42,8 +54,4 @@ class Player:
         return self.team
 
     def __repr__(self):
-        return f"{self.name}"
-
-
-if __name__ == "__main__":
-    print(Player())
+        return f"Trainer {self.name}"
