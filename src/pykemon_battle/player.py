@@ -5,18 +5,8 @@ from .pokemon import Pokemon
 TOTAL_POKEMON = 807
 
 
-def check_that_team_is_valid(team):
-    """
-    Check that the team is valid
-    """
-    if type(team) is not list:
-        raise TypeError("team must be a list of Pokemon objects")
-    for pokemon in team:
-        if not isinstance(pokemon, Pokemon):
-            raise TypeError("team entries must be Pokemon objects")
-
-
 class Player:
+    # TODO: Maybe break this class into two classes (Player and Team)?
     def __init__(self, team=1, name="Ash"):
         """
         Creates a player object with a given team (or team size) and name
@@ -32,23 +22,34 @@ class Player:
         self.name = name
         # TODO: Add upper bound to team size
         if isinstance(team, int) and team > 0:
-            self.get_random_team(team)
+            self.team = self.get_random_team(team)
         elif isinstance(team, list):
-            check_that_team_is_valid(team)
+            self.check_that_team_is_valid(team)
             self.team = team
         else:
             raise TypeError("Team must be a list or an int")
         self.selected = self.team[0]
 
+    def check_that_team_is_valid(self, team):
+        """
+        Check that the team is valid
+        """
+        if type(team) is not list:
+            raise TypeError("team must be a list of Pokemon objects")
+        for pokemon in team:
+            if not isinstance(pokemon, Pokemon):
+                raise TypeError("team entries must be Pokemon objects")
+
     def get_random_team(self, team_size):
         """
         Randomly generates a team of pokemon with a given team size
         """
-        self.team = []
+        team = []
         for _ in range(team_size):
             pokemon = Pokemon(np.random.randint(1, TOTAL_POKEMON))
             pokemon.get_moves(move_selection="random")
-            self.team.append(pokemon)
+            team.append(pokemon)
+        return team
 
     def get_team(self):
         return self.team

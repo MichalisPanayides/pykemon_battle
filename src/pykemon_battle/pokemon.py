@@ -74,7 +74,9 @@ class Pokemon:
         special_defense = self.json["stats"][4]["base_stat"]
         speed = self.json["stats"][5]["base_stat"]
 
+        # TODO: Implement volatile status
         self.volatile_status = {}
+        # TODO: Implement volatile battle status
         self.volatile_battle_status = {}
 
         self.stats = {

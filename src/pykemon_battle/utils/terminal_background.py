@@ -11,3 +11,10 @@ def change_terminal_background(pokemon):
         if pokemon.name in TERMINAL_BACKGROUND_CORRECTIONS:
             corrected_poke_name = TERMINAL_BACKGROUND_CORRECTIONS[pokemon.name]
         os.system(f"pokemon {corrected_poke_name}")
+
+
+def clear_background():
+    """
+    Clear the terminal background.
+    """
+    os.system(f"pokemon -c")
