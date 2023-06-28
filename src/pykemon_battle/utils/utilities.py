@@ -44,7 +44,6 @@ def manually_choose_moveset(all_moves):
         move = input(f"Move {len(moveset) + 1} : ")
         if move in all_moves_names and move not in moveset:
             moveset += (move,)
-
     return moveset
 
 
@@ -65,3 +64,26 @@ def choose_first_four_moves_for_now(all_moves):
     """
     moveset = tuple(move["move"]["name"] for move in all_moves[:4])
     return moveset
+
+
+# def check_that_team_is_valid(team):
+#     """
+#     Check that the team is valid
+#     """
+#     if type(team) is not list:
+#         raise TypeError("team must be a list of Pokemon objects")
+#     for pokemon in team:
+#         if not isinstance(pokemon, Pokemon):
+#             raise TypeError("team entries must be Pokemon objects")
+
+
+# def get_random_team(team_size):
+#     """
+#     Randomly generates a team of pokemon with a given team size
+#     """
+#     team = []
+#     for _ in range(team_size):
+#         pokemon = Pokemon(np.random.randint(1, TOTAL_POKEMON))
+#         pokemon.get_moves(move_selection="random")
+#         team.append(pokemon)
+#     return team
