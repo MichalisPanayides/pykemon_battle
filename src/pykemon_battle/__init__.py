@@ -7,3 +7,5 @@ __version__ = "0.0.3"
 from .battle import Battle
 from .move import Move
 from .pokemon import Pokemon
+from .player import Player
+from .interface import Interface

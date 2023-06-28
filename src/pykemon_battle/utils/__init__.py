@@ -5,13 +5,16 @@ from .utilities import (
     manually_choose_moveset,
     randomly_choose_moveset,
     choose_first_four_moves_for_now,
+    # get_random_team,
+    # check_that_team_is_valid,
 )
 
 from .battle_dynamics import (
-    choose_move,
-    apply_move,
-    player_turn_logic,
-    enemy_turn_logic,
+    # choose_move,
+    damage_function,
+    # apply_move,
+    # player_turn_logic,
+    # enemy_turn_logic,
 )
 
 from .text_display import (
@@ -20,4 +23,7 @@ from .text_display import (
     clear_screen,
 )
 
-from .terminal_background import change_terminal_background
+from .terminal_background import (
+    change_terminal_background,
+    clear_background,
+)
