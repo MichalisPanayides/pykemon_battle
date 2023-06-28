@@ -39,6 +39,14 @@ Install a development version of this library by cloning the repository and runn
     $ python -m flit install --symlink
 
 
+## Optional Requirements
+An optional package that is used for the interface is `pokemon-terminal`. It can be installed by running:
+
+    $ python -m pip install git+https://github.com/LazoCoder/Pokemon-Terminal.git
+
+The `pokemon-terminal` changes the background of certain supported terminals to minimalistic Pokémon picture. This is not a requirement for the library to work, but it is cool to enable. For more information check out the GitHub repository [here](https://github.com/LazoCoder/Pokemon-Terminal.git).
+
+
 ## Usage
 Include the following in a python script:
 
@@ -53,6 +61,15 @@ Then run the script in your terminal:
 
     $ python my_script.py
 
+
+## Code structure
+
+```
+Move -> Pokemon -> Team -> Player -> Battle
+  \         \       |       /         /
+
+                Interface
+```
 
 ## Tests
 Run all tests developed by first installing and then running `tox`:
