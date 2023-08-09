@@ -7,13 +7,13 @@ from rich.console import Console
 from .pokemon import Pokemon
 from .player import Player
 from .utils import (
-    # enemy_turn_logic,
-    # player_turn_logic,
     show_health_bar,
     clear_screen,
     display_text,
     change_terminal_background,
     clear_background,
+    display_text_for_pokemon_selection,
+    start_terminal_slideshow,
 )
 from .battle import Battle
 
@@ -21,15 +21,29 @@ console = Console(highlight=False)
 TOTAL_POKEMON = 898
 
 
+def test_purposes():
+    user = Player(team=[Pokemon(1), Pokemon(321), Pokemon(543)], name="Mixas")
+    enemy = Player(team=3, name="Foe")
+    for pokemon in user.team:
+        pokemon.get_moves(move_selection="random")
+    for pokemon in enemy.team:
+        pokemon.get_moves(move_selection="random")
+    return user, enemy
+
+
 class Interface:
     """
     Class that contains the user interface
     """
 
-    def __init__(self):
-        # self.display_welcome_message()
+    def __init__(self, terminal_change=False):
+        self.terminal_change = terminal_change
+        self.display_welcome_message()
         self.build_player()
         self.build_enemy(difficulty="random")
+
+        # self.user, self.enemy = test_purposes()
+
         self.battle = Battle(player_1=self.user, player_2=self.enemy)
 
     def display_welcome_message(self):
@@ -120,27 +134,30 @@ class Interface:
         """
         Build the enemy team
         """
-        self.enemy_team = []
+        if self.terminal_change:
+            start_terminal_slideshow()
+
         with console.status("", spinner="aesthetic"):
             display_text("Fetching enemy details")
-            # TODO: Implement all the difficulities
             if difficulty == "random":
-                for _ in range(len(self.team)):
-                    enemy_pokemon = Pokemon(np.random.randint(1, 152))
-                    enemy_pokemon.get_moves(move_selection="random")
-                    self.enemy_team.append(enemy_pokemon)
+                self.enemy = Player(team=len(self.user.team), name="Foe")
             else:
+                # TODO: Implement all the difficulities
                 raise NotImplementedError
-            self.enemy = Player(team=self.enemy_team, name="Foe")
+
+            if self.terminal_change:
+                time.sleep(2)
+                clear_background()
+        
         display_text(text="Your opponent is ready", user_input=True, animate=True)
 
-    def choose_move(self, player_pokemon):
+    def choose_move(self):
         """
         Choose one of the 4 moves
         """
         is_move_selected = False
         display_text(text="Choose your move: \n")
-        for count, move in enumerate(player_pokemon.moveset):
+        for count, move in enumerate(self.battle.player_1.selected.moveset):
             display_text(
                 text=f"{count + 1} : {move} \n \t "
                 + f"{move.stats['pp_left']}/{move.stats['total_pp']}",
@@ -157,8 +174,15 @@ class Interface:
             possible_selections = [str(move_no) for move_no in range(1, 5)]
             if selected_move_string in possible_selections:
                 selected_move = int(selected_move_string) - 1
-                if player_pokemon.moveset[selected_move].stats["pp_left"] > 0:
-                    player_pokemon.moveset[selected_move].stats["pp_left"] -= 1
+                if (
+                    self.battle.player_1.selected.moveset[selected_move].stats[
+                        "pp_left"
+                    ]
+                    > 0
+                ):
+                    self.battle.player_1.selected.moveset[selected_move].stats[
+                        "pp_left"
+                    ] -= 1
                     is_move_selected = True
                 else:
                     display_text(
@@ -177,7 +201,6 @@ class Interface:
             user_input=True,
             animate=True,
         )
-
 
         if move_outcome["success"]:
             if move_outcome["modifier"] == 1:
@@ -208,82 +231,122 @@ class Interface:
                 raise ValueError("Invalid modifier value")
         else:
             display_text(text="Attack missed!", user_input=True, animate=True)
-    
 
-    def pokemon_fainted():
-        pass
+    def choose_new_pokemon(self):
+        """
+        Actions to take when player's pokemon faints
+        """
+        new_pokemon_pos = display_text_for_pokemon_selection(self.battle)
+        self.battle.switch_pokemon(
+            player_turn=True, pokemon_pos=new_pokemon_pos
+        )
+        
+        clear_screen()
+        show_health_bar(
+            pokemon_1=self.battle.player_1.selected,
+            pokemon_2=self.battle.player_2.selected,
+        )
 
 
-    def interactive_battle(self, terminal_change=False):
+    def interactive_battle(self):
         """
         Start the battle
         """
-        clear_screen()
-
-        # TODO: Need something like the next line?
-        # print([i.fainted for i in self.battle.player_1.team if i.non_volatile_status == "active"])
-
-        player_remaining_pokemon = self.team.copy()
-        enemy_remaining_pokemon = self.enemy_team.copy()
-
         # TODO: Maybe change everything to be object oriented
         # (i.e. instead of player_pokemon, use self.battle.player_1.selected)
-        player_pokemon = self.team[0]
-        enemy_pokemon = self.enemy_team[0]
 
-        player_turn = player_pokemon.stats["speed"] >= enemy_pokemon.stats["speed"]
+        player_turn = (
+            self.battle.player_1.selected.stats["speed"]
+            >= self.battle.player_2.selected.stats["speed"]
+        )
 
-        clear_screen()
-        show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-        print("\n")
-        while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
-            if terminal_change:
+        end_battle = False
+        while not end_battle:
+
+            if not self.battle.player_1.selected.active:
+                display_text(
+                    text=f"{self.battle.player_1.selected} fainted!",
+                    user_input=True,
+                    animate=True,
+                )
+                self.choose_new_pokemon()
+                print("\n")
+                display_text(
+                    text=f"Go {self.battle.player_1.selected}!",
+                    user_input=True,
+                    animate=True,
+                )        
+
+            if not self.battle.player_2.selected.active:
+                display_text(
+                    text=f"{self.battle.player_2.selected} fainted!",
+                    user_input=True,
+                    animate=True,
+                )
+                new_pokemon_pos = np.random.choice(
+                    [poke for poke in self.battle.player_2.team if poke.health_points > 0]
+                ).party_position
+                self.battle.switch_pokemon(
+                    player_turn=False,pokemon_pos=new_pokemon_pos
+                )
+                display_text(
+                    text=f"Your opponent sent out {self.battle.player_2.selected}!",
+                    user_input=True,
+                    animate=True,
+                )
+
+            clear_screen()
+            show_health_bar(
+                pokemon_1=self.battle.player_1.selected,
+                pokemon_2=self.battle.player_2.selected,
+            )
+            print("\n")
+
+
+            if self.terminal_change:
                 change_terminal_background(
-                    player_pokemon if player_turn else enemy_pokemon
+                    self.battle.player_1.selected
+                    if player_turn
+                    else self.battle.player_2.selected
                 )
             if player_turn:
-                selected_move = self.choose_move(player_pokemon)
-                turn_outcome = self.battle.player_turn_logic(selected_move=selected_move)
+                selected_move = self.choose_move()
+                turn_outcome = self.battle.player_turn_logic(
+                    selected_move=selected_move
+                )
                 self.display_move_outcome(move_outcome=turn_outcome)
-                # if player_pokemon.non_volatile_status == "fainted":
-                #     player_remaining_pokemon.remove(player_pokemon)
-                #     if len(player_remaining_pokemon) > 0:
-                #         self.battle.switch_pokemon(player_turn=True, pokemon_pos=0)
             else:
                 selected_move = np.random.randint(0, 4)
                 turn_outcome = self.battle.enemy_turn_logic(selected_move=selected_move)
                 self.display_move_outcome(move_outcome=turn_outcome)
 
-            if self.battle.player_1.selected is None:
-                new_pokemon_selected = False
-                while not new_pokemon_selected:
-                    new_pokemon_pos = display_text(
-                        text="Choose new pokemon:",
-                        user_input=True,
-                        include_arrow=False,
-                        animate=True,
-                    )
-                self.battle.switch_pokemon(player_turn=True, pokemon_pos=new_pokemon_pos)
-            
-            if self.battle.player_2.selected is None:
-                new_pokemon_pos = np.random.choice(
-                    [
-                        i
-                        for i in range(len(enemy_remaining_pokemon))
-                        if enemy_remaining_pokemon[i].non_volatile_status == "active"
-                    ]
-                )
-                self.battle.switch_pokemon(player_turn=False, pokemon_pos=new_pokemon_pos)
-            
+            player_1_out_of_pokemon = len(
+                [poke for poke in self.battle.player_1.team if poke.active]
+            ) <= 0
+            player_2_out_of_pokemon = len(
+                [poke for poke in self.battle.player_2.team if poke.active]
+            ) <= 0
+
+            end_battle = (player_1_out_of_pokemon or player_2_out_of_pokemon)
             player_turn = not player_turn
-            clear_screen()
-            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-            print("\n")
 
-        if len(player_remaining_pokemon) > 0:
-            display_text("You won!")
+        if player_1_out_of_pokemon and player_2_out_of_pokemon:
+            display_text(
+                "Somehow this is a tie! No special behaviour is implemented yet"
+            )
+        elif player_1_out_of_pokemon:
+            display_text(
+                text="You lost!",
+                animate=True,
+            )
+        elif player_2_out_of_pokemon:
+            display_text(
+                text="You won!",
+                animate=True,
+            )
         else:
-            display_text("You lost!")
-
-        if terminal_change:
+            raise ValueError("Invalid end battle condition")
+        
+        print("\n")
+        if self.terminal_change:
             clear_background()

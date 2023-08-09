@@ -99,6 +99,7 @@ class Battle:
         }
         return move_outcome_display
 
+    # TODO: Merge player_turn_logic and enemy_turn_logic in one method
     def player_turn_logic(self, selected_move: int):
         """
         Logic of the player turn
@@ -112,8 +113,7 @@ class Battle:
         self.defender = self.player_2.selected
         move_outcome = self.apply_move(selected_move)
         if self.player_2.selected.health_points <= 0:
-            self.player_2.selected.non_volatile_status = "fainted"
-            self.player_2.selected = None
+            self.player_2.selected.active = False
         return move_outcome
 
     def enemy_turn_logic(self, selected_move: int):
@@ -129,8 +129,7 @@ class Battle:
         self.defender = self.player_1.selected
         move_outcome = self.apply_move(selected_move)
         if self.player_1.selected.health_points <= 0:
-            self.player_1.selected.non_volatile_status = "fainted"
-            self.player_1.selected = None
+            self.player_1.selected.active = False
         return move_outcome
 
     def switch_pokemon(self, player_turn=True, pokemon_pos=None):
@@ -146,19 +145,23 @@ class Battle:
             The pokemon that will be selected
         """
         current_player = self.player_1 if player_turn else self.player_2
-        if current_player.selected is not None:
-            raise ValueError("You can't switch pokemon if you have a pokemon selected")
         if pokemon_pos is not None:
             current_player.selected = current_player.team[pokemon_pos]
-            if current_player.selected.non_volatile_status == "fainted":
+            if not current_player.selected.active:
                 raise ValueError("This pokemon has fainted")
         else:
-            for pokemon in current_player.team:
-                if pokemon.non_volatile_status != "fainted":
-                    current_player.selected = pokemon
-                    break
+            # TODO: Implement a way to select the pokemon when no pokemon_pos is given
             if current_player.selected is None:
                 raise ValueError("No more pokemon to battle")
+    
+    def get_active_pokemon(self, player_turn=True):
+        """
+        Return the active pokemon of a player
+        """
+        if player_turn:
+            return [poke for poke in self.battle.player_1.team if poke.health_points > 0]
+        else:
+            return [poke for poke in self.battle.player_2.team if poke.health_points > 0]
 
     def simulate(
         self,
