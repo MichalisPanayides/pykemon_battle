@@ -28,6 +28,7 @@ class Player:
             self.team = team
         else:
             raise TypeError("Team must be a list or an int")
+        self.assign_party_positions()
         self.selected = self.team[0]
 
     def check_that_team_is_valid(self, team):
@@ -51,6 +52,13 @@ class Player:
             team.append(pokemon)
         return team
 
+    def assign_party_positions(self):
+        """
+        Assigns the party positions of the team
+        """
+        for i, pokemon in enumerate(self.team):
+            pokemon.party_position = i
+            
     def get_team(self):
         return self.team
 
