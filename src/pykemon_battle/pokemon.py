@@ -92,11 +92,13 @@ class Pokemon:
         """
         Heals the pokemon to its base stat.
 
+        The active status is set to False if the pokemon is fainted.
         Possible values for non-volatile status:
-            active, fainted, paralyzed, asleep, burned, poisoned
+            paralyzed, asleep, burned, poisoned
         """
         self.health_points = self.json["stats"][0]["base_stat"]
-        self.non_volatile_status = "active"
+        self.non_volatile_status = None
+        self.active = True
 
     def get_moves(self, move_selection="Random"):
         """
