@@ -98,7 +98,7 @@ def display_text_for_pokemon_selection(current_battle):
     print("\n")
     display_text("Which pokemon do you choose?")
     display_pokemon_options(current_battle.player_1.team)
-    
+
     while not is_pokemon_selected:
         poke_choice_string = display_text(
             text="Choose a pokemon: ",

@@ -9,7 +9,7 @@ class Move:
     def __init__(self, move_name):
         self.json = get_move_info(move_name)
         self.name = self.json["name"]
-        
+
         # TODO: Create new class Pokemon_move() that inherits Move() and split attributes between the two
         self.get_main_stats()
         self.get_other_stats()
@@ -33,7 +33,6 @@ class Move:
             "priority": priority,
             "target": target,
         }
-
 
     def get_other_stats(self):
         """

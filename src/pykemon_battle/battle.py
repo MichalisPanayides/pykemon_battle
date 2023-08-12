@@ -42,7 +42,7 @@ class Battle:
             self.player_2 = Player(team=enemy_team, name="Player 2")
         else:
             self.player_2 = player_2
-            
+
         self.turn = None
 
     def apply_move(self, move):
@@ -89,7 +89,7 @@ class Battle:
                 self.defender.health_points = self.defender.health_points - damage
                 if self.defender.health_points < 0:
                     self.defender.health_points = 0
-        
+
         move_outcome_display = {
             "move_name": self.attacker.moveset[move].name,
             "move_index": move,
@@ -153,15 +153,19 @@ class Battle:
             # TODO: Implement a way to select the pokemon when no pokemon_pos is given
             if current_player.selected is None:
                 raise ValueError("No more pokemon to battle")
-    
+
     def get_active_pokemon(self, player_turn=True):
         """
         Return the active pokemon of a player
         """
         if player_turn:
-            return [poke for poke in self.battle.player_1.team if poke.health_points > 0]
+            return [
+                poke for poke in self.battle.player_1.team if poke.health_points > 0
+            ]
         else:
-            return [poke for poke in self.battle.player_2.team if poke.health_points > 0]
+            return [
+                poke for poke in self.battle.player_2.team if poke.health_points > 0
+            ]
 
     def simulate(
         self,

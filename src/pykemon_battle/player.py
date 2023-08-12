@@ -58,7 +58,7 @@ class Player:
         """
         for i, pokemon in enumerate(self.team):
             pokemon.party_position = i
-            
+
     def get_team(self):
         return self.team
 

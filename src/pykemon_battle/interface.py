@@ -148,7 +148,7 @@ class Interface:
             if self.terminal_change:
                 time.sleep(2)
                 clear_background()
-        
+
         display_text(text="Your opponent is ready", user_input=True, animate=True)
 
     def choose_move(self):
@@ -237,16 +237,13 @@ class Interface:
         Actions to take when player's pokemon faints
         """
         new_pokemon_pos = display_text_for_pokemon_selection(self.battle)
-        self.battle.switch_pokemon(
-            player_turn=True, pokemon_pos=new_pokemon_pos
-        )
-        
+        self.battle.switch_pokemon(player_turn=True, pokemon_pos=new_pokemon_pos)
+
         clear_screen()
         show_health_bar(
             pokemon_1=self.battle.player_1.selected,
             pokemon_2=self.battle.player_2.selected,
         )
-
 
     def interactive_battle(self):
         """
@@ -262,7 +259,6 @@ class Interface:
 
         end_battle = False
         while not end_battle:
-
             if not self.battle.player_1.selected.active:
                 display_text(
                     text=f"{self.battle.player_1.selected} fainted!",
@@ -275,7 +271,7 @@ class Interface:
                     text=f"Go {self.battle.player_1.selected}!",
                     user_input=True,
                     animate=True,
-                )        
+                )
 
             if not self.battle.player_2.selected.active:
                 display_text(
@@ -284,10 +280,14 @@ class Interface:
                     animate=True,
                 )
                 new_pokemon_pos = np.random.choice(
-                    [poke for poke in self.battle.player_2.team if poke.health_points > 0]
+                    [
+                        poke
+                        for poke in self.battle.player_2.team
+                        if poke.health_points > 0
+                    ]
                 ).party_position
                 self.battle.switch_pokemon(
-                    player_turn=False,pokemon_pos=new_pokemon_pos
+                    player_turn=False, pokemon_pos=new_pokemon_pos
                 )
                 display_text(
                     text=f"Your opponent sent out {self.battle.player_2.selected}!",
@@ -301,7 +301,6 @@ class Interface:
                 pokemon_2=self.battle.player_2.selected,
             )
             print("\n")
-
 
             if self.terminal_change:
                 change_terminal_background(
@@ -320,14 +319,14 @@ class Interface:
                 turn_outcome = self.battle.enemy_turn_logic(selected_move=selected_move)
                 self.display_move_outcome(move_outcome=turn_outcome)
 
-            player_1_out_of_pokemon = len(
-                [poke for poke in self.battle.player_1.team if poke.active]
-            ) <= 0
-            player_2_out_of_pokemon = len(
-                [poke for poke in self.battle.player_2.team if poke.active]
-            ) <= 0
+            player_1_out_of_pokemon = (
+                len([poke for poke in self.battle.player_1.team if poke.active]) <= 0
+            )
+            player_2_out_of_pokemon = (
+                len([poke for poke in self.battle.player_2.team if poke.active]) <= 0
+            )
 
-            end_battle = (player_1_out_of_pokemon or player_2_out_of_pokemon)
+            end_battle = player_1_out_of_pokemon or player_2_out_of_pokemon
             player_turn = not player_turn
 
         if player_1_out_of_pokemon and player_2_out_of_pokemon:
@@ -346,7 +345,7 @@ class Interface:
             )
         else:
             raise ValueError("Invalid end battle condition")
-        
+
         print("\n")
         if self.terminal_change:
             clear_background()

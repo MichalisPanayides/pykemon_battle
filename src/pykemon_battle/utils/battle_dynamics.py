@@ -4,12 +4,12 @@ import time
 import numpy as np
 
 from .constants import TYPE_EFFECTS
+
 # from .text_display import (
 #     show_health_bar,
 #     clear_screen,
 #     display_text,
 # )
-
 
 
 def damage_function(variables):
@@ -95,46 +95,46 @@ def damage_function(variables):
 
 #     return defending_pokemon.health_points
 
-    # display_text(
-    #     text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}",
-    #     user_input=True,
-    #     animate=True,
-    # )
+# display_text(
+#     text=f"{attacking_pokemon} used {attacking_pokemon.moveset[move]}",
+#     user_input=True,
+#     animate=True,
+# )
 
-    #         if attack_variables["modifier"] == 1:
-    #             display_text(
-    #                 text=f"It's effective! (Damage: {damage})",
-    #                 user_input=True,
-    #                 animate=True,
-    #             )
-    #         elif attack_variables["modifier"] >= 2:
-    #             display_text(
-    #                 text=f"It's super effective! (Damage: {damage})",
-    #                 user_input=True,
-    #                 animate=True,
-    #             )
-    #         elif 0 < attack_variables["modifier"] <= 0.5:
-    #             display_text(
-    #                 text=f"It's not very effective! (Damage: {damage})",
-    #                 user_input=True,
-    #                 animate=True,
-    #             )
-    #         elif attack_variables["modifier"] == 0:
-    #             display_text(
-    #                 text=f"But it failed! (Damage: {damage})",
-    #                 user_input=True,
-    #                 animate=True,
-    #             )
-    #         else:
-    #             raise ValueError("Invalid modifier value")
-    #     else:
-    #         display_text(text="Attack missed!", user_input=True, animate=True)
-    # else:
-    #     display_text(
-    #         text="Unfortunately this move has not been implemented yet. Sorry.",
-    #         user_input=True,
-    #         animate=True,
-    #     )
+#         if attack_variables["modifier"] == 1:
+#             display_text(
+#                 text=f"It's effective! (Damage: {damage})",
+#                 user_input=True,
+#                 animate=True,
+#             )
+#         elif attack_variables["modifier"] >= 2:
+#             display_text(
+#                 text=f"It's super effective! (Damage: {damage})",
+#                 user_input=True,
+#                 animate=True,
+#             )
+#         elif 0 < attack_variables["modifier"] <= 0.5:
+#             display_text(
+#                 text=f"It's not very effective! (Damage: {damage})",
+#                 user_input=True,
+#                 animate=True,
+#             )
+#         elif attack_variables["modifier"] == 0:
+#             display_text(
+#                 text=f"But it failed! (Damage: {damage})",
+#                 user_input=True,
+#                 animate=True,
+#             )
+#         else:
+#             raise ValueError("Invalid modifier value")
+#     else:
+#         display_text(text="Attack missed!", user_input=True, animate=True)
+# else:
+#     display_text(
+#         text="Unfortunately this move has not been implemented yet. Sorry.",
+#         user_input=True,
+#         animate=True,
+#     )
 
 
 # def player_turn_logic(player_pokemon, enemy_pokemon, enemy_remaining_pokemon):
