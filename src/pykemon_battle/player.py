@@ -5,20 +5,21 @@ from .pokemon import Pokemon
 TOTAL_POKEMON = 807
 
 
+# TODO: Maybe break this class into two classes (Player and Team)?
 class Player:
-    # TODO: Maybe break this class into two classes (Player and Team)?
-    def __init__(self, team=1, name="Ash"):
-        """
-        Creates a player object with a given team (or team size) and name
+    """
+    Creates a player object with a given team (or team size) and name
 
-        Parameters
-        ----------
-        team : int or list, optional
-            if int: get a random team of that size
-            if list: use the list as the current Pokemon team
-        name : str, optional
-            The name of the player, by default "Ash"
-        """
+    Parameters
+    ----------
+    team : int or list, optional
+        if int: get a random team of that size
+        if list: use the list as the current Pokemon team
+    name : str, optional
+        The name of the player, by default "Ash"
+    """
+
+    def __init__(self, team=1, name="Ash"):
         self.name = name
         # TODO: Add upper bound to team size
         if isinstance(team, int) and team > 0:
@@ -35,7 +36,7 @@ class Player:
         """
         Check that the team is valid
         """
-        if type(team) is not list:
+        if not isinstance(team, list):
             raise TypeError("team must be a list of Pokemon objects")
         for pokemon in team:
             if not isinstance(pokemon, Pokemon):
@@ -60,6 +61,9 @@ class Player:
             pokemon.party_position = i
 
     def get_team(self):
+        """
+        Returns the player's team of Pokemons
+        """
         return self.team
 
     def __repr__(self):

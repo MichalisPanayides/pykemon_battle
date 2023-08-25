@@ -13,6 +13,7 @@ from .utils import (
     change_terminal_background,
     clear_background,
     display_text_for_pokemon_selection,
+    display_welcome_message,
     start_terminal_slideshow,
 )
 from .battle import Battle
@@ -22,6 +23,9 @@ TOTAL_POKEMON = 898
 
 
 def test_purposes():
+    """
+    Function for playtesting purposes
+    """
     user = Player(team=[Pokemon(1), Pokemon(321), Pokemon(543)], name="Mixas")
     enemy = Player(team=3, name="Foe")
     for pokemon in user.team:
@@ -38,24 +42,17 @@ class Interface:
 
     def __init__(self, terminal_change=False):
         self.terminal_change = terminal_change
-        self.display_welcome_message()
+        display_welcome_message()
+
+        self.team_size = None
+        self.team = None
+
         self.build_player()
         self.build_enemy(difficulty="random")
 
         # self.user, self.enemy = test_purposes()
 
         self.battle = Battle(player_1=self.user, player_2=self.enemy)
-
-    def display_welcome_message(self):
-        """
-        Welcome message
-        """
-        display_text(
-            text="Welcome to Pykemon Battle",
-            user_input=True,
-            include_arrow=True,
-            animate=True,
-        )
 
     def build_player(self):
         """
@@ -69,7 +66,8 @@ class Interface:
                 include_arrow=False,
                 animate=True,
             )
-            if type(player_name) != str or len(player_name) <= 0:
+
+            if not isinstance(player_name, str) or len(player_name) <= 0:
                 player_name = None
 
         self.choose_team_size()
@@ -77,6 +75,9 @@ class Interface:
         self.user = Player(team=self.team, name=player_name)
 
     def choose_team_size(self):
+        """
+        Choose the size of the team
+        """
         team_size = None
         while team_size is None:
             team_size = display_text(
@@ -196,8 +197,9 @@ class Interface:
         """
         After a move is selected, display the outcome of the move
         """
+        move_index = self.battle.attacker.moveset[move_outcome["move_index"]]
         display_text(
-            text=f"{self.battle.attacker} used {self.battle.attacker.moveset[move_outcome['move_index']]}",
+            text=f"{self.battle.attacker} used {move_index}",
             user_input=True,
             animate=True,
         )
@@ -303,6 +305,7 @@ class Interface:
             print("\n")
 
             if self.terminal_change:
+                # TODO: Check if pokemon is in the terminal list otherwise keep black
                 change_terminal_background(
                     self.battle.player_1.selected
                     if player_turn

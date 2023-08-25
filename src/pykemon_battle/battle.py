@@ -1,10 +1,8 @@
-import re
 import math
 
 import numpy as np
 from rich.console import Console
 
-from .pokemon import Pokemon
 from .player import Player
 from .utils import (
     damage_function,
@@ -44,6 +42,8 @@ class Battle:
             self.player_2 = player_2
 
         self.turn = None
+        self.attacker = None
+        self.defender = None
 
     def apply_move(self, move):
         """
@@ -87,8 +87,7 @@ class Battle:
             attack_successful = np.random.random() < (move_accuracy / 100)
             if attack_successful:
                 self.defender.health_points = self.defender.health_points - damage
-                if self.defender.health_points < 0:
-                    self.defender.health_points = 0
+                self.defender.health_points = max(self.defender.health_points, 0)
 
         move_outcome_display = {
             "move_name": self.attacker.moveset[move].name,
@@ -159,18 +158,16 @@ class Battle:
         Return the active pokemon of a player
         """
         if player_turn:
-            return [
-                poke for poke in self.battle.player_1.team if poke.health_points > 0
-            ]
-        else:
-            return [
-                poke for poke in self.battle.player_2.team if poke.health_points > 0
-            ]
+            return [poke for poke in self.player_1.team if poke.health_points > 0]
+        return [poke for poke in self.player_2.team if poke.health_points > 0]
 
     def simulate(
         self,
     ):
-        pass
+        """
+        Simulate the battle
+        """
+        raise NotImplementedError
 
     def __repr__(self):
         return f"<Battle: {self.player_1} vs {self.player_2}>"

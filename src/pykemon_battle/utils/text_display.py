@@ -6,6 +6,18 @@ import numpy as np
 from rich.console import Console
 
 
+def display_welcome_message():
+    """
+    Welcome message
+    """
+    display_text(
+        text="Welcome to Pykemon Battle",
+        user_input=True,
+        include_arrow=True,
+        animate=True,
+    )
+
+
 def show_health_bar(pokemon_1, pokemon_2):
     """
     Function to display health points of the battling pokemon

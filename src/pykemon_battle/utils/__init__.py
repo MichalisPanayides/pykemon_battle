@@ -22,6 +22,7 @@ from .text_display import (
     show_health_bar,
     clear_screen,
     display_text_for_pokemon_selection,
+    display_welcome_message,
 )
 
 from .terminal_background import (

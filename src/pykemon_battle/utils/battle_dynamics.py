@@ -1,9 +1,4 @@
 import math
-import time
-
-import numpy as np
-
-from .constants import TYPE_EFFECTS
 
 # from .text_display import (
 #     show_health_bar,
@@ -70,7 +65,8 @@ def damage_function(variables):
 #         attack_variables["move_type"] in attack_variables["attacker_type"]
 #     )
 #     type_effects = list(
-#         TYPE_EFFECTS[attack_variables["move_type"]][type_i] for type_i in defender_type
+#         TYPE_EFFECTS[attack_variables["move_type"]][type_i]
+#         for type_i in defender_type
 #     )
 #     attack_variables["modifier"] = math.prod(type_effects)
 #     attack_variables["stochasticity"] = np.random.randint(217, 256)
@@ -89,7 +85,11 @@ def damage_function(variables):
 #             defending_pokemon.health_points = defending_pokemon.health_points - damage
 
 #     if defending_pokemon.health_points <= 0:
-#         display_text(text=f"{defending_pokemon} fainted", user_input=True, animate=True)
+#         display_text(
+#             text=f"{defending_pokemon} fainted",
+#             user_input=True,
+#             animate=True
+#         )
 #         defending_pokemon.health_points = 0
 #         defending_pokemon.status = "fainted"
 

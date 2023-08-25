@@ -14,13 +14,23 @@ class Pokemon:
     A pokemon is a class that represents a pokemon.
     """
 
+    # pylint: disable=too-many-instance-attributes
+
     def __init__(self, poke_id):
         self.json = get_pokemon_info(poke_id=poke_id)
         self.name = self.json["name"]
         self.type = list(slot["type"]["name"] for slot in self.json["types"])
+        self.health_points = None
+        self.active = None
+
+        self.stats = {}
+        self.volatile_status = {}
+        self.volatile_battle_status = {}
+        self.non_volatile_status = {}
+        self.moveset = None
+
         self.heal()
         self.reset_stats()
-        self.moveset = None
 
         # self.get_moves()
 
@@ -94,6 +104,7 @@ class Pokemon:
 
         The active status is set to False if the pokemon is fainted.
         Possible values for non-volatile status:
+        self.health
             paralyzed, asleep, burned, poisoned
         """
         self.health_points = self.json["stats"][0]["base_stat"]

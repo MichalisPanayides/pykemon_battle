@@ -9,7 +9,7 @@ def get_pokemon_info(poke_id, base_url="https://pokeapi.co/api/v2/pokemon/"):
     """
     Returns a dictionary of the pokemon's name, types, and abilities
     """
-    req = requests.get(base_url + str(poke_id).lower())
+    req = requests.get(base_url + str(poke_id).lower(), timeout=15)
     if req.status_code == 404:
         raise ValueError(f"The Pokemon with ID ({poke_id}) could not be found")
     return req.json()
@@ -19,7 +19,7 @@ def get_move_info(move_id, base_url="https://pokeapi.co/api/v2/move/"):
     """
     Returns a dictionary of the move's name, type, and damage
     """
-    req = requests.get(base_url + str(move_id))
+    req = requests.get(base_url + str(move_id), timeout=15)
     if req.status_code == 404:
         raise ValueError(f"The move with ID ({move_id}) could not be found")
     return req.json()
