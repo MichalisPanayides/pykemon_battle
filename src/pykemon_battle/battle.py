@@ -1,21 +1,16 @@
-import random
-import re
+import math
 
+import numpy as np
 from rich.console import Console
 
-# from .move import Move
-from .pokemon import Pokemon
+from .player import Player
 from .utils import (
-    enemy_turn_logic,
-    player_turn_logic,
-    show_health_bar,
-    clear_screen,
-    display_text,
-    change_terminal_background,
+    damage_function,
+    constants,
 )
 
 console = Console(highlight=False)
-TOTAL_POKEMON = 898
+TOTAL_POKEMON = 807
 
 
 class Battle:
@@ -23,107 +18,156 @@ class Battle:
     Class that contains the battle logic of the game
     """
 
-    def __init__(self, team_size=6):
-        self.get_team(team_size=team_size)
-        self.enemy_team = None
+    def __init__(self, player_1=None, player_2=None, team=1, enemy_team=1):
+        """
+        Initialise the battle object
 
-    def get_team(self, team_size=6):
+        Parameters
+        ----------
+        team : int, list, optional
+            If int is given this will be the size of the team,
+            If list is given that is the team, by default 1
+        enemy_team : int, list, optional
+            If int is given this will be the size of the enemy team,
+            If list is given that is the enemy team, by default None
         """
-        Build the team of the player
-        """
-        self.team = []
-        # TODO: Implement the multiple move selections
-        move_selection = "random"
-        for team_index in range(team_size):
-            current_pokemon = None
-            while current_pokemon is None:
-                pokemon_id = display_text(
-                    f"Choose pokemon {team_index + 1} by id or name:",
-                    user_input=True,
-                    include_arrow=False,
-                    animate=True,
-                )
-                sanitized_pokemon_id = re.search(r"\d{1,3}$", pokemon_id)
-                if sanitized_pokemon_id is not None:
-                    if int(sanitized_pokemon_id.group()) in range(1, TOTAL_POKEMON + 1):
-                        current_pokemon = Pokemon(int(sanitized_pokemon_id.group()))
-                    else:
-                        display_text(
-                            f"Pokemon id should be between 1-{TOTAL_POKEMON}.",
-                            user_input=True,
-                            animate=True,
-                        )
-                else:
-                    try:
-                        current_pokemon = Pokemon(pokemon_id)
-                    except ValueError:
-                        display_text("Invalid input.", user_input=True, animate=True)
-                        continue
-            current_pokemon.get_moves(move_selection=move_selection)
-            self.team.append(current_pokemon)
-
-    def choose_dificulty(self):
-        """
-        Choose the difficulty of the battle
-        """
-        # TODO: Implement all the difficulities
-        # diff = input(
-        #     "Choose the difficulty: \n1: Random \n2: Easy \n3: Hard \nAnswer : "
-        # )
-        difficulty = "random"
-        self.build_enemy_team(difficulty=difficulty)
-
-    def build_enemy_team(self, difficulty):
-        """
-        Build the enemy team
-        """
-        if difficulty == "random":
-            self.enemy_team = []
-            for _ in range(len(self.team)):
-                enemy_pokemon = Pokemon(random.randint(1, 151))
-                enemy_pokemon.get_moves(move_selection="random")
-                self.enemy_team.append(enemy_pokemon)
+        if player_1 is None:
+            self.player_1 = Player(team=team, name="Player 1")
         else:
-            raise NotImplementedError
+            self.player_1 = player_1
 
-    def start_battle(self, terminal_change=False):
-        """
-        Start the battle
-        """
-        clear_screen()
-        with console.status("", spinner="aesthetic"):
-            display_text("Fetching enemy details")
-            self.choose_dificulty()
-        display_text(text="Your opponent is ready", user_input=True, animate=True)
-
-        player_remaining_pokemon = self.team.copy()
-        enemy_remaining_pokemon = self.enemy_team.copy()
-
-        player_pokemon = self.team[0]
-        enemy_pokemon = self.enemy_team[0]
-
-        player_turn = player_pokemon.stats["speed"] >= enemy_pokemon.stats["speed"]
-
-        clear_screen()
-        show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-        print("\n")
-        while len(player_remaining_pokemon) > 0 and len(enemy_remaining_pokemon) > 0:
-            if terminal_change:
-                change_terminal_background(player_pokemon)
-            if player_turn:
-                enemy_pokemon, enemy_remaining_pokemon = player_turn_logic(
-                    player_pokemon, enemy_pokemon, enemy_remaining_pokemon
-                )
-            else:
-                player_pokemon, player_remaining_pokemon = enemy_turn_logic(
-                    player_pokemon, enemy_pokemon, player_remaining_pokemon
-                )
-            player_turn = not player_turn
-            clear_screen()
-            show_health_bar(pokemon_1=player_pokemon, pokemon_2=enemy_pokemon)
-            print("\n")
-
-        if len(player_remaining_pokemon) > 0:
-            display_text("You won!")
+        if player_2 is None:
+            self.player_2 = Player(team=enemy_team, name="Player 2")
         else:
-            display_text("You lost!")
+            self.player_2 = player_2
+
+        self.turn = None
+        self.attacker = None
+        self.defender = None
+
+    def apply_move(self, move):
+        """
+        Apply the selected move
+
+        Parameters
+        ----------
+        move : int
+            The index of the selected move (0-3)
+        """
+        move_attr = {}
+        # Move variables
+        move_attr["move_power"] = self.attacker.moveset[move].stats["power"]
+        move_attr["move_type"] = self.attacker.moveset[move].stats["type"]
+
+        # Attacker and defender variables
+        move_attr["attacker_level"] = 50
+        move_attr["attacker_type"] = self.attacker.type
+        move_attr["attacker_attack"] = self.attacker.stats["attack"]
+        move_attr["defender_defense"] = self.defender.stats["defense"]
+
+        # Other variables
+        move_attr["same_type_advantage"] = (
+            move_attr["move_type"] in move_attr["attacker_type"]
+        )
+        type_effects = list(
+            constants.TYPE_EFFECTS[move_attr["move_type"]][type_i]
+            for type_i in self.defender.type
+        )
+        move_attr["modifier"] = math.prod(type_effects)
+        move_attr["stochasticity"] = np.random.randint(217, 256)
+
+        damage = None
+        attack_successful = False
+        if move_attr["move_power"] is not None:
+            damage = damage_function(variables=move_attr)
+            attacker_accuracy = self.attacker.moveset[move].stats["accuracy"]
+            move_accuracy = attacker_accuracy if attacker_accuracy is not None else 100
+
+            # TODO: Include pokemon's accuracy as well
+            attack_successful = np.random.random() < (move_accuracy / 100)
+            if attack_successful:
+                self.defender.health_points = self.defender.health_points - damage
+                self.defender.health_points = max(self.defender.health_points, 0)
+
+        move_outcome_display = {
+            "move_name": self.attacker.moveset[move].name,
+            "move_index": move,
+            "success": attack_successful,
+            "modifier": move_attr["modifier"],
+            "damage": damage,
+        }
+        return move_outcome_display
+
+    # TODO: Merge player_turn_logic and enemy_turn_logic in one method
+    def player_turn_logic(self, selected_move: int):
+        """
+        Logic of the player turn
+
+        Parameters
+        ----------
+        selected_move : int
+            The index of the move that was selected (0-3)
+        """
+        self.attacker = self.player_1.selected
+        self.defender = self.player_2.selected
+        move_outcome = self.apply_move(selected_move)
+        if self.player_2.selected.health_points <= 0:
+            self.player_2.selected.active = False
+        return move_outcome
+
+    def enemy_turn_logic(self, selected_move: int):
+        """
+        Logic of the enemy turn
+
+        Parameters
+        ----------
+        selected_move : int
+            The index of the move that was selected (0-3)
+        """
+        self.attacker = self.player_2.selected
+        self.defender = self.player_1.selected
+        move_outcome = self.apply_move(selected_move)
+        if self.player_1.selected.health_points <= 0:
+            self.player_1.selected.active = False
+        return move_outcome
+
+    def switch_pokemon(self, player_turn=True, pokemon_pos=None):
+        """
+        Switch the selected pokemon of a player. The current player's selected
+        pokemon has to be None to be able to switch.
+
+        Parameters
+        ----------
+        player : Player
+            The player whose selected pokemon will be changed
+        pokemon : Pokemon
+            The pokemon that will be selected
+        """
+        current_player = self.player_1 if player_turn else self.player_2
+        if pokemon_pos is not None:
+            current_player.selected = current_player.team[pokemon_pos]
+            if not current_player.selected.active:
+                raise ValueError("This pokemon has fainted")
+        else:
+            # TODO: Implement a way to select the pokemon when no pokemon_pos is given
+            if current_player.selected is None:
+                raise ValueError("No more pokemon to battle")
+
+    def get_active_pokemon(self, player_turn=True):
+        """
+        Return the active pokemon of a player
+        """
+        if player_turn:
+            return [poke for poke in self.player_1.team if poke.health_points > 0]
+        return [poke for poke in self.player_2.team if poke.health_points > 0]
+
+    def simulate(
+        self,
+    ):
+        """
+        Simulate the battle
+        """
+        raise NotImplementedError
+
+    def __repr__(self):
+        return f"<Battle: {self.player_1} vs {self.player_2}>"

@@ -6,6 +6,18 @@ import numpy as np
 from rich.console import Console
 
 
+def display_welcome_message():
+    """
+    Welcome message
+    """
+    display_text(
+        text="Welcome to Pykemon Battle",
+        user_input=True,
+        include_arrow=True,
+        animate=True,
+    )
+
+
 def show_health_bar(pokemon_1, pokemon_2):
     """
     Function to display health points of the battling pokemon
@@ -75,3 +87,54 @@ def display_text(
         py_console.print("\033[A", " " * (len(text) + len(out) + 3), "\033[A")
         return out
     return None
+
+
+def display_pokemon_options(list_of_options):
+    """
+    Function to display options in the terminal
+    """
+    for i, poke in enumerate(list_of_options):
+        if poke.active:
+            display_text(text=f"{i + 1} :  {poke}")
+        else:
+            display_text(text=f"{i + 1} :  {poke} (fainted)", style="white on red")
+
+
+def display_text_for_pokemon_selection(current_battle):
+    """
+    Function to display text for pokemon selection
+    """
+    new_pokemon_pos = None
+    is_pokemon_selected = False
+
+    print("\n")
+    display_text("Which pokemon do you choose?")
+    display_pokemon_options(current_battle.player_1.team)
+
+    while not is_pokemon_selected:
+        poke_choice_string = display_text(
+            text="Choose a pokemon: ",
+            user_input=True,
+            animate=True,
+            include_arrow=False,
+        )
+
+        if poke_choice_string.isdigit() and int(poke_choice_string) in range(
+            1, len(current_battle.player_1.team) + 1
+        ):
+            if current_battle.player_1.team[int(poke_choice_string) - 1].active:
+                new_pokemon_pos = int(poke_choice_string) - 1
+                is_pokemon_selected = True
+            else:
+                display_text(
+                    text="Pokemon has fainted",
+                    user_input=True,
+                    animate=True,
+                )
+        else:
+            display_text(
+                text="Invalid pokemon choice",
+                user_input=True,
+                animate=True,
+            )
+    return new_pokemon_pos
